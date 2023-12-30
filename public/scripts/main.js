@@ -130,7 +130,7 @@ dark_light_toggle.addEventListener('pointerdown', function(e) {
     }
 });
 
-dark_light_toggle.addEventListener('click', function(e) {
+dark_light_toggle.addEventListener('pointerdown', function(e) {
 
     if (toggled !== 1) {
         toggled = 1
@@ -240,7 +240,7 @@ async function sendPrompt(prompt) {
             history_action_button.className = "history-prompt-element-cancel-button";
             history_action_button.id = "action_" + prompt_id
 
-            history_action_button.addEventListener('click', function(e) {
+            history_action_button.addEventListener('pointerdown', function(e) {
                 e.target.className = "history-prompt-element-cancel-button-selected";
                 var prompt_id = e.target.parentElement.parentElement.id.split("_")[1];
                 setTimeout(function() {

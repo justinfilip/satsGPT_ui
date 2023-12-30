@@ -49,7 +49,7 @@ html {
     font-size: 17px;
     word-break: break-word;
     display: inline-block;
-    border-radius: 10px;
+    border-radius: 7px;
     transition: .2s;
 }
 
@@ -186,7 +186,7 @@ html {
     padding-bottom: 30px;
     font-size: 17px;
     scrollbar-width: none;
-    z-index: 96;
+    z-index: 0;
     opacity: 0%;
 }
 
