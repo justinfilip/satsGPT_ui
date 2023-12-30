@@ -13,9 +13,6 @@
     <meta name="description" content="">
     <link href="styles/style_light.css" rel="stylesheet" type="text/css"/>
     <link href="styles/style_dark.css" rel="stylesheet" type="text/css"/>
-    <link href="styles/style_night.css" rel="stylesheet" type="text/css"/>
-    <link href="styles/style_space.css" rel="stylesheet" type="text/css"/>
-    <link href="styles/style_deep.css" rel="stylesheet" type="text/css"/>
     <!-- <link rel="stylesheet" href="/styles/prism.css"> -->
     <title style="display: none;">satsgpt.xyz</title>
 
@@ -43,14 +40,11 @@
             
         </div>
 
-
         <div id="accountpage" class="pagehidden">
             <center>
                 C
             </center>
         </div>
-
-
 
         <div id="aboutpage" class="pagehidden">
             <center>
@@ -58,7 +52,6 @@
             </center>
         </div>
 
-        
     </body>
 
     <script src="scripts/main.js"></script>

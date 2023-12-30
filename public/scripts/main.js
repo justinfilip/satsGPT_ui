@@ -19,7 +19,10 @@ var display_mode = ""
 var display_mode_cookie = readCookie('display_mode');
 
 if (display_mode_cookie == null) {
-    display_mode = "light_"
+    display_mode = "light_";
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        dlToggle(1);
+    }
 
 } else {
     display_mode = display_mode_cookie;
@@ -51,15 +54,8 @@ for(i=0;i<navbuttons.length;i++) {
     document.getElementById('promptpage').className = 'activepage';
 }
 
-// As soon as the page loads, the user's focus should be on prompting
-// text_input.focus();
 text_input.innerHTML = "<i>Write your prompt here</i>";
 text_input.className = display_mode + "text-input";
-// setTimeout(function(e) {
-//     text_input.focus();
-// }, 1000)
-
-// Reset prompt input field depending on conditions:
 
 text_input.addEventListener('focusout', async function(e) {
     if(text_input.innerHTML.length < 1) {
@@ -105,12 +101,6 @@ function dlToggle(mode) {
         if (display_mode === 'light_') {
             display_mode = 'dark_';
         } else if (display_mode === 'dark_') {
-            display_mode = 'night_';
-        } else if (display_mode === 'night_') {
-            display_mode = 'space_';
-        } else if (display_mode === 'space_') {
-            display_mode = 'deep_';
-        } else if (display_mode === 'deep_') {
             display_mode = 'light_';
         } else {
             console.log("shouldn't be here");
@@ -158,7 +148,7 @@ async function getTokens(prompt_id, last_token) {
     .then(response => response.json())
     .then(data => {
 
-        console.log(data);
+        // console.log(data);
         // data = JSON.parse(data);
         last_token = data[prompt_id][1]
 
@@ -224,7 +214,7 @@ async function sendPrompt(prompt) {
         //
         //
 
-        console.log(data);
+        // console.log(data);
         // data = JSON.parse(data);
 
         //
@@ -273,10 +263,9 @@ async function sendPrompt(prompt) {
                         //
                         //
                 
-                        console.log(data);
+                        // console.log(data);
                         // data = JSON.parse(data);
                         
-
                         task_deleted = data[prompt_id][0];
 
                         if (task_deleted === 1) {
@@ -287,10 +276,6 @@ async function sendPrompt(prompt) {
                             console.log("do this later");
                         }
                         
-
-
-
-
                     })
                     .catch(error => {
                         console.error('Error:', error);
@@ -393,11 +378,6 @@ document.getElementById("keys_toggle").addEventListener('pointerdown', function(
         text_input.className = display_mode + "text-input-closed";
     }
 });
-
-
-
-
-
 
 // Auxillary functions:
 

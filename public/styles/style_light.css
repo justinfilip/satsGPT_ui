@@ -7,16 +7,19 @@
 html {
     width: 100%;
     height: auto;
+    scrollbar-width: none;
     
 }
 
 .light_body {
+    background-color: #ffffff;
     width: 100%;
     height: auto;
     margin: 0;
     padding-top: 5px;
     padding-bottom: 75vh;
     scrollbar-width: none;
+    transition: .3s;
 }
 
 .light_toggle {
@@ -51,7 +54,7 @@ html {
 }
 
 .light_history-prompt-element-loading {
-    background: linear-gradient(-45deg, #ff99001c, #d5d5d51c, #ff990029, #d5d5d51c);
+    background: linear-gradient(-45deg, #d5d5d51c, #d5d5d51c, #ff990029, #d5d5d51c);
 	background-size: 500% 450%;
 	animation: gradient 4.20s ease infinite;
     color: #2f2f2f;
@@ -64,7 +67,7 @@ html {
     word-break: break-word;
     display: inline-block;
     /* filter: drop-shadow(2px 2px 2px #f1f1f181); */
-    border-radius: 10px;
+    border-radius: 7px;
     transition: .4s;
     scroll-margin-top: 150px;
     /* border-bottom: 1px solid #0000; */
@@ -190,6 +193,7 @@ html {
     word-break: break-word;
     overflow-y: scroll;
     overflow-x: hidden;
+    transition: .3s;
 }
 
 .light_prompt-actions {
@@ -322,6 +326,7 @@ html {
     height: 100%;
     overflow-y: scroll;
     max-height: 100%;
+    scrollbar-width: none;
 }
 
 .pagehidden {

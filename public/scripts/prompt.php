@@ -15,7 +15,6 @@ function getTokens($prompt_id, $last_token, $server_mode) {
 
     $postData = $jsonData = json_encode($data);
 
-
     // Initialize cURL session
     $curl = curl_init($url);
 
@@ -41,7 +40,6 @@ function getTokens($prompt_id, $last_token, $server_mode) {
 
     // Output the response
     echo $response;
-
 }
 
 function sendPrompt($prompt, $server_mode) {
@@ -60,7 +58,6 @@ function sendPrompt($prompt, $server_mode) {
 
     $postData = $jsonData = json_encode($data);
 
-
     // Initialize cURL session
     $curl = curl_init($url);
 
@@ -86,8 +83,6 @@ function sendPrompt($prompt, $server_mode) {
 
     // Output the response
     echo $response;
-
-
 }
 
 function deleteInferenceTask($prompt_id, $last_token) {
