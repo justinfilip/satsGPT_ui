@@ -38,7 +38,7 @@ for(i=0;i<navbuttons.length;i++) {
         var targetpage = e.target.getAttribute('targetpage');
 
         if(text_input.innerText.length < 1) {
-            text_input.innerHTML = "<i>Write your prompt here</i>";
+            text_input.innerHTML = '<i id="placeholder">Write your prompt here</i>';
         }
 
         for(i=0;i<selectednavbuttons.length;i++) {
@@ -54,36 +54,36 @@ for(i=0;i<navbuttons.length;i++) {
     document.getElementById('promptpage').className = 'activepage';
 }
 
-text_input.innerHTML = "<i>Write your prompt here</i>";
+text_input.innerHTML = '<i id="placeholder">Write your prompt here</i>';
 text_input.className = display_mode + "text-input";
 
 text_input.addEventListener('focusout', async function(e) {
     if(text_input.innerHTML.length < 1) {
-        text_input.innerHTML = "<i>Write your prompt here</i>";
+        text_input.innerHTML = '<i id="placeholder">Write your prompt here</i>';
     }
 });
 
 text_input.addEventListener('blur', async function(e) {
     if(text_input.innerHTML.length < 1) {
-        text_input.innerHTML = "<i>Write your prompt here</i>";
+        text_input.innerHTML = '<i id="placeholder">Write your prompt here</i>';
     }
 });
 
 text_input.addEventListener('onfocus', async function(e) {
-    if(text_input.innerHTML == "<i>Write your prompt here</i>") {
+    if(text_input.innerHTML == '<i id="placeholder">Write your prompt here</i>') {
         text_input.innerText = "";
     }
 });
 
 text_input.addEventListener('click', async function(e) {
 
-    if(text_input.innerHTML == "<i>Write your prompt here</i>") {
+    if(text_input.innerHTML == '<i id="placeholder">Write your prompt here</i>') {
         text_input.innerText = "";
     }
 });
 
 window.addEventListener('focus', async function(e) {
-    if(text_input.innerHTML == "<i>Write your prompt here</i>") {
+    if(text_input.innerHTML == '<i id="placeholder">Write your prompt here</i>') {
         text_input.innerText = "";
     }
 });
@@ -241,6 +241,8 @@ async function sendPrompt(prompt) {
             history_action_button.id = "action_" + prompt_id
 
             history_action_button.addEventListener('click', function(e) {
+                e.target.className = "history-prompt-element-cancel-button-selected";
+                
                 if (e.target.parentElement.parentElement.className === display_mode + "history-prompt-element-loading") {
                     // call server to cancel inference task for prompt_id
                     
@@ -309,30 +311,38 @@ async function sendPrompt(prompt) {
     });
 }
 
+// Sending prompts
+
+const send_button = document.getElementById('text_input_send_button');
+
 // Make sure the user's prompt is formatted properly:
 
-async function validateSendPrompt(prompt) {
-    if(prompt.length < 5) {
+async function validateSendPrompt(send_button, prompt) {
+    if(prompt.length < 5 || text_input.innerHTML == '<i id="placeholder">Write your prompt here</i>') {
+        send_button.className = "text-input-send-button-rejected";
+        setTimeout(function (e) {
+            send_button.className = "text-input-send-button";
+        }, 300);
         // Let the user know the prompt isn't long enough
         return
 
     } else {
+        send_button.className = "text-input-send-button-selected";
+        setTimeout(function (e) {
+            send_button.className = "text-input-send-button";
+        }, 300);
         sendPrompt(prompt);
     }
 }
 
-// Click the logo to send your prompt (for now):
+// Send button to send
 
-document.getElementById('text_input_send_button').addEventListener('pointerdown', async function(e) {
+send_button.addEventListener('pointerdown', async function(e) {
 
-    e.target.className = "text-input-send-button-selected";
-    setTimeout(function (e) {
-        document.getElementById('text_input_send_button').className = "text-input-send-button";
-    }, 300)
     var prompt = text_input.innerText
     // text_input.className = display_mode + "text-input-closed";
     // text_input_open = 0;
-    validateSendPrompt(prompt);
+    validateSendPrompt(send_button, prompt);
 
 });
 
@@ -348,7 +358,7 @@ text_input.addEventListener('keyup', function(e) {
         }
         e.preventDefault();
         var prompt = text_input.innerText
-        validateSendPrompt(prompt);
+        validateSendPrompt(send_button, prompt);
     }
 });
 

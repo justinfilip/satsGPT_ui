@@ -6,7 +6,7 @@
     padding-top: 5px;
     padding-bottom: 75vh;
     scrollbar-width: none;
-    transition: .3s;
+    transition: .2s;
 }
 
 .dark_toggle {
@@ -16,8 +16,7 @@
     right: 27px;
     bottom: 17px;
     z-index: 100;
-    transition: .3s;
-    transform: rotate(-720deg);
+    transition: .2s;
 }
 
 .dark_history-prompt-element {
@@ -31,7 +30,7 @@
     word-break: break-word;
     display: inline-block;
     border-radius: 10px;
-    transition: .3s;
+    transition: .2s;
 }
 
 .dark_history-prompt-element-loading {
@@ -78,16 +77,17 @@
     word-break: break-word;
     display: inline-block;
     font-size: 17px;
-    transition: .3s;
+    transition: .2s;
 }
 
 .dark_text-input-closed {
     background-color: #000000;
+    border-top: 1px solid #0e0e0e;
     color: #ffffff;
     position: fixed;
     bottom: 50px;
     width: 100%;
-    height: 0px;
+    min-height: 0px;
     padding: 20px;
     padding-bottom: 30px;
     font-size: 17px;
@@ -116,7 +116,8 @@
     word-break: break-word;
     overflow-y: scroll;
     overflow-x: hidden;
-    transition: .3s;
+    transition-property: background-color border-top opacity min-height;
+    transition-duration: .2s;
 }
 
 .dark_prompt-actions {
@@ -126,9 +127,9 @@
     height: 90px;
     position: fixed;
     bottom: 0px;
-    z-index: 96;
+    z-index: 100;
     opacity: 100%;
-    transition: .3s;
+    transition: .2s;
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
     -webkit-user-select: none;
@@ -145,7 +146,7 @@
     left: 0;
     width: 100%;
     height: 45px;
-    z-index: 97;
+    z-index: 100;
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
     -webkit-user-select: none;
@@ -153,7 +154,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    transition: .3s;
+    transition: .2s;
 }
 
 .dark_navbutton {
@@ -163,7 +164,7 @@
     padding-left: 13px;
     padding-right: 13px;
     height: 40px;
-    transition: .3s;
+    transition: .2s;
 }
 
 .dark_navbuttonselected {
@@ -173,5 +174,5 @@
     padding-left: 13px;
     padding-right: 13px;
     height: 40px;
-    transition: .3s;
+    transition: .2s;
 }

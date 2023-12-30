@@ -20,7 +20,7 @@
         <center><div id="satsGPT" class="light_satsGPT"></div></center>
         
         <span id="text-input" tabindex="0" class="light_text-input-closed" role="textbox" placeholder="What?" contenteditable></span>
-        <div class="send-tooltip">shift + enter /</div>
+        <div class="send-tooltip">send: shift + enter /</div>
         <div id="prompt-actions" class="light_prompt-actions"><center><div id="keys_toggle" class="keys-toggle-open"></div></center><div id="text_input_send_button" class="text-input-send-button"></div></div>
         <div class="light_actions">
 
