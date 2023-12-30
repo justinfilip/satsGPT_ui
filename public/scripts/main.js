@@ -242,47 +242,50 @@ async function sendPrompt(prompt) {
 
             history_action_button.addEventListener('click', function(e) {
                 e.target.className = "history-prompt-element-cancel-button-selected";
-                
-                if (e.target.parentElement.parentElement.className === display_mode + "history-prompt-element-loading") {
-                    // call server to cancel inference task for prompt_id
-                    
-                    var request_body = {
-                        prompt_id: e.target.parentElement.parentElement.id.split("_")[1],
-                        mode: 1,
-                    }
-
-                    fetch('scripts/prompt.php', {
-                        method: 'POST',
-                        body: JSON.stringify(request_body)
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        // Once the PHP function has completed, do something with the returned string
-                
-                        //
-                        //
-                        // Enable the log here to get PHP to dump errors to the console
-                        //
-                        //
-                
-                        // console.log(data);
-                        // data = JSON.parse(data);
+                var prompt_id = e.target.parentElement.parentElement.id.split("_")[1];
+                setTimeout(function() {
+                    var prompt_history_element_to_delete = document.getElementById("prompt_" + prompt_id);
+                    if (prompt_history_element_to_delete.className === display_mode + "history-prompt-element-loading") {
+                        // call server to cancel inference task for prompt_id
                         
-                        task_deleted = data[prompt_id][0];
-
-                        if (task_deleted === 1) {
-                            e.target.parentElement.parentElement.remove();
-                            document.getElementById(prompt_id).remove();
-                        } else {
-                            // failed, maybe retry
-                            console.log("do this later");
+                        var request_body = {
+                            prompt_id: prompt_id,
+                            mode: 1,
                         }
-                        
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-                }
+    
+                        fetch('scripts/prompt.php', {
+                            method: 'POST',
+                            body: JSON.stringify(request_body)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Once the PHP function has completed, do something with the returned string
+                    
+                            //
+                            //
+                            // Enable the log here to get PHP to dump errors to the console
+                            //
+                            //
+                    
+                            // console.log(data);
+                            // data = JSON.parse(data);
+                            
+                            task_deleted = data[prompt_id][0];
+    
+                            if (task_deleted === 1) {
+                                prompt_history_element_to_delete.remove();
+                                document.getElementById(prompt_id).remove();
+                            } else {
+                                // failed, maybe retry
+                                console.log("do this later");
+                            }
+                            
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    }
+                }, 100);
             });
 
             history_actions.append(history_action_button);
