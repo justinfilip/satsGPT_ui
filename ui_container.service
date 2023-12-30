@@ -1,0 +1,10 @@
+[Unit]
+After=network.service
+
+[Service]
+ExecStart=/home/user/satsGPT_ui/auto_build_run_container.sh
+StandardOutput=null
+StandardError=null
+
+[Install]
+WantedBy=default.target
