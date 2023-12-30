@@ -303,7 +303,7 @@ async function sendPrompt(prompt) {
             history_container.append(history_element);
 
             var created_history_prompt_element = document.getElementById("prompt_" + prompt_id);
-            const y = created_history_prompt_element.getBoundingClientRect().top + window.scrollY-500;
+            const y = created_history_prompt_element.getBoundingClientRect().top + window.scrollY - 100;
 
             window.scrollTo({top: y, behavior: 'smooth'});
 

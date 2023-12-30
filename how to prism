@@ -1,3 +1,12 @@
+FIRST OFF
+
+In the page js, catch ``` ``` pairs where they appear in the history window and change them to <pre><code></code></pre>
+
+THEN
+
+- -
+
+
 How do you implement prism.js?Prism is a popular syntax highlighting library for web projects that can be easily implemented in a few steps. Here's a simple guide on how to add Prism.js to your HTML project:
 
 1. **Download Prism.js**: Visit the [Prism.js download page](https://prismjs.com/download.html) and select the languages you want to include. After selecting, click "Download" to get a ZIP file containing the necessary files.
