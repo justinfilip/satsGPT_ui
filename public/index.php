@@ -3,7 +3,7 @@
 <head>
 
     <meta name="viewport" content="initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" charset="UTF-8"/>
-    <!-- <link rel="icon" type="image/png" href="favicon.png"/> --> 
+    <link rel="icon" type="image/png" href="media/favicon.png"/> 
 
 </head>
 

@@ -21,7 +21,7 @@ var display_mode_cookie = readCookie('display_mode');
 if (display_mode_cookie == null) {
     display_mode = "light_";
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        dlToggle(1);
+        dlToggle(0);
     }
 
 } else {
