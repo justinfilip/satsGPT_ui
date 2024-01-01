@@ -9,11 +9,16 @@
 // # user_id= message.get('user_id') # Bitcoin/lightning address
 // # password = message.get('password')
 
-const history_container = document.getElementById("history-window");
-const text_input = document.getElementById("text-input");
-var prompt_page = document.getElementById("promptpage");
+const history_container = document.getElementById("history_window");
+const text_input = document.getElementById("text_input");
+const prompt_page = document.getElementById("promptpage");
 const navbar = document.getElementById("navbar");
 const navbuttons = navbar.children;
+const prompt_actions = document.getElementById("prompt_actions");
+const keys_toggle = document.getElementById("keys_toggle");
+const send_button = document.getElementById("text_input_send_button");
+const send_tip = document.getElementById("send_tip");
+const satsGPT_logo = document.getElementById("satsGPT");
 
 var display_mode = ""
 var display_mode_cookie = readCookie('display_mode');
@@ -43,7 +48,28 @@ for(i=0;i<navbuttons.length;i++) {
 
         for(i=0;i<selectednavbuttons.length;i++) {
             selectednavbuttons[i].className = display_mode + 'navbutton';
-            activepages[i].className = 'pagehidden';
+            activepages[i].className = 'hidden';
+        }
+
+        if (targetpage == "promptpage") {
+            text_input.className = display_mode + "text-input";
+            prompt_actions.className = display_mode + "prompt-actions";
+            keys_toggle.className = "keys-toggle-open";
+            send_button.className = "text-input-send-button";
+            send_tip.className = "send-tooltip";
+            
+        } else {
+            satsGPT_logo.className = "hidden";
+            text_input.className = "hidden";
+            prompt_actions.className = "hidden";
+            keys_toggle.className = "hidden";
+            send_button.className = "hidden";
+            send_tip.className = "hidden";
+        }
+
+        if (targetpage == "aboutpage") {
+            satsGPT_logo.className = "satsGPT";
+            
         }
 
         e.target.className = display_mode + 'navbuttonselected';
@@ -105,14 +131,16 @@ function dlToggle(mode) {
         } else {
             console.log("shouldn't be here");
         }
-    
+        
         setCookie('display_mode', display_mode);
-    }    
+    }
+
+    document.getElementById("satsGPT").src = "media/" + display_mode + "about_satsGPT.png";
 
     var themed_elements = document.querySelectorAll('[class*="_"]');
 
     for (i=0;i<themed_elements.length;i++) {
-        themed_elements[i].className = display_mode + themed_elements[i].className.split("_")[1]
+        themed_elements[i].className = display_mode + themed_elements[i].className.split("_")[1];
     }
 
     setTimeout(function(e) {
@@ -316,8 +344,6 @@ async function sendPrompt(prompt) {
 
 // Sending prompts
 
-const send_button = document.getElementById('text_input_send_button');
-
 // Make sure the user's prompt is formatted properly:
 
 async function validateSendPrompt(send_button, prompt) {
@@ -378,16 +404,16 @@ text_input.addEventListener('keypress', function(e) {
 
 var text_input_open = 1
 
-document.getElementById("keys_toggle").addEventListener('pointerdown', function(e) {
+keys_toggle.addEventListener('pointerdown', function(e) {
     // event listener for open/close input
     
     if (text_input_open == 0) {
         text_input_open = 1;
-        document.getElementById("keys_toggle").className = "keys-toggle-open";
+        keys_toggle.className = "keys-toggle-open";
         text_input.className = display_mode + "text-input";
     } else {
         text_input_open = 0;
-        document.getElementById("keys_toggle").className = "keys-toggle-close";
+        keys_toggle.className = "keys-toggle-close";
         text_input.className = display_mode + "text-input-closed";
     }
 });

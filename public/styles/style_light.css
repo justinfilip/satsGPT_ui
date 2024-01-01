@@ -11,6 +11,14 @@ html {
     
 }
 
+.satsGPT {
+    position: relative;
+    width: 500px;
+    max-width: 90%;
+    height: auto;
+    border-radius: 25px;
+}
+
 .light_body {
     background-color: #ffffff;
     width: 100%;
@@ -364,6 +372,6 @@ html {
     scrollbar-width: none;
 }
 
-.pagehidden {
+.hidden {
     display: none;
 }
