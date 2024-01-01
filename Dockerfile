@@ -7,7 +7,10 @@ RUN apt-get update && \
         ssl-cert \
         ca-certificates \
         curl \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+        libpq-dev \
+        && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+        && docker-php-ext-install pgsql \
+        && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Prepare Apache for SSL
 RUN a2enmod ssl && \

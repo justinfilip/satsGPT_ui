@@ -33,7 +33,7 @@
             <img id="light-dark-toggle" class="light_toggle" src="media/light_dark_toggle.png"></img>
         </div>
 
-        <div id="promptpage" class="pagehidden">
+        <div id="promptpage" class="hidden">
 
             <div id="history_window" class="history-window">
                 <!-- User, agent dialoge history -->
@@ -41,21 +41,20 @@
             
         </div>
 
-        <div id="accountpage" class="pagehidden">
+        <div id="accountpage" class="hidden">
             <center>
                 C
             </center>
         </div>
 
-        <div id="aboutpage" class="pagehidden">
-            <center>
-                <img id="satsGPT" class="hidden" src="media/x_pic.png"></img>
-            </center>
+        <div id="aboutpage" class="hidden">
+            <center><img id="light_satsGPT" class="satsGPT" src="media/light_about_satsGPT.png"></img></center>
+            <center><img id="dark_satsGPT" class="satsGPT-invisible" src="media/dark_about_satsGPT.png"></img></center>
         </div>
 
-    </body>
+        <script src="scripts/main.js"></script>
+        <!-- <script src="scripts/prism.js"></script> -->
 
-    <script src="scripts/main.js"></script>
-    <!-- <script src="scripts/prism.js"></script> -->
+    </body>
 
 </html>

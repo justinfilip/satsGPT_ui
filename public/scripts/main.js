@@ -18,7 +18,6 @@ const prompt_actions = document.getElementById("prompt_actions");
 const keys_toggle = document.getElementById("keys_toggle");
 const send_button = document.getElementById("text_input_send_button");
 const send_tip = document.getElementById("send_tip");
-const satsGPT_logo = document.getElementById("satsGPT");
 
 var display_mode = ""
 var display_mode_cookie = readCookie('display_mode');
@@ -59,17 +58,11 @@ for(i=0;i<navbuttons.length;i++) {
             send_tip.className = "send-tooltip";
             
         } else {
-            satsGPT_logo.className = "hidden";
             text_input.className = "hidden";
             prompt_actions.className = "hidden";
             keys_toggle.className = "hidden";
             send_button.className = "hidden";
             send_tip.className = "hidden";
-        }
-
-        if (targetpage == "aboutpage") {
-            satsGPT_logo.className = "satsGPT";
-            
         }
 
         e.target.className = display_mode + 'navbuttonselected';
@@ -122,6 +115,7 @@ const pages_num = 3;
 
 function dlToggle(mode) {
 
+    var satsGPT_logo = document.getElementById(display_mode + "satsGPT");
     if (mode === 0) {
         // cycling themes
         if (display_mode === 'light_') {
@@ -135,7 +129,9 @@ function dlToggle(mode) {
         setCookie('display_mode', display_mode);
     }
 
-    document.getElementById("satsGPT").src = "media/" + display_mode + "about_satsGPT.png";
+    var alternate_satsGPT_logo = document.getElementById(display_mode + "satsGPT");
+    satsGPT_logo.className = "satsGPT-invisible";
+    alternate_satsGPT_logo.className = "satsGPT";
 
     var themed_elements = document.querySelectorAll('[class*="_"]');
 
@@ -165,6 +161,35 @@ dark_light_toggle.addEventListener('pointerdown', function(e) {
         dlToggle(0);
     }
 });
+
+// User
+
+async function userMod($username, $password, $mode) {
+
+    var request_body = {
+        username: $username,
+        password: $password,
+        mode: $mode
+        // 0 = create user, 1 = delete user
+    }
+
+    fetch('scripts/user.php', {
+        method: 'POST',
+        body: JSON.stringify(request_body)
+    })
+    .then(response => response.text()) //.json()
+    .then(data => {
+    
+        // console.log(data);
+        // data = JSON.parse(data);
+        // last_token = data[prompt_id][1]
+        console.log(data);
+        console.log("user added");
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
 
 // Get token completions from the inference server:
 
@@ -449,3 +474,6 @@ function isMobile() {
     }
     return false;
 }
+
+
+userMod('test', 'test', 0);
