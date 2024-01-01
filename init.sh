@@ -32,5 +32,5 @@ sudo systemctl enable ui_container.service
 
 sudo chmod 744 /home/user/satsGPT_ui/auto_build_run_container.sh
 
-cd /home/user/ssl_redirect/
+cd /home/user/satsGPT_users/
 sudo bash ./init.sh
