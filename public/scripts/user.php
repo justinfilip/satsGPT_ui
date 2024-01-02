@@ -1,40 +1,50 @@
 <?php
 
+function userMod($username, $password, $mode) {
+    
+    // $id = md5($username.$password);
 
+    $input = "$username" . "$password";
+    $algorithm = "sha256"; // You can choose any supported algorithm
+    $hash = hash($algorithm, $input);
 
+    // The URL to which the request is sent
+    $url = 'https://www.satsgpt.xyz:9090/sgptusermod';
 
+    // The data to send via POST
+    $data = [
+        'user_hash' => $hash,
+        'mode' => $mode
+    ];
 
-function addUser($username, $password) {
-    // Connect to the PostgreSQL server
-    $connection = pg_connect("host=199.87.136.158 port=5432 dbname=satsgpt_users user=sgpt password=@2j;jkjkl;");
+    $postData = $jsonData = json_encode($data);
 
-    $id = md5($username.$password);
+    // Initialize cURL session
+    $curl = curl_init($url);
 
-    // Insert a row
-    $query = "INSERT INTO satsgpt_users (id) VALUEs ('$id');";
-    pg_query($connection, $query);
+    // Set cURL options
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);  // Return response as a string
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);  // Enable SSL certificate verification
+    curl_setopt($curl, CURLOPT_POST, 1);            // Set the request method to POST
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);     // Attach the data to be sent
+    curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 
-    // echo json_encode({'test': 'complete'});
-    // // Update a row
-    // // $query = "UPDATE users SET name='Jane Doe' WHERE email='john.doe@example.com'";
-    // // pg_query($connection, $query);
+    // Execute the cURL session and fetch response
+    $response = curl_exec($curl);
 
-    // Read a row
-    $query = "SELECT * FROM users WHERE id=$id";
-    $result = pg_query($connection, $query);
-    $row = pg_fetch_assoc($result);
-    echo $row;
+    // Check for errors
+    if ($response === false) {
+        $error = curl_error($curl);
+        curl_close($curl);
+        die("cURL Error: $error");
+    }
 
-    // // Delete a row
-    // $query = "DELETE FROM users WHERE id=$id";
-    // pg_query($connection, $query);
+    // Close cURL session
+    curl_close($curl);
 
-    // // Close the connection
-    // pg_close($connection);
+    // Output the response
+    echo $response;
 }
-
-
-
 
 // Function request handler
 
@@ -43,22 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Get the text from the javascript request body
     $request_body = trim(file_get_contents('php://input'));
     $data = json_decode($request_body, true);
+    $username = $data['username'];
+    $password = $data['password'];
     $mode = $data['mode'];
 
-    // create user
-    if ($mode == 0) {
-
-        $username = $data['username'];
-        $password = $data['password'];
-        addUser($username, $password);
-
-    // delete user
-    } else if ($mode == 1) {
-        $username = $data['username'];
-        $password = $data['password'];
-        deleteUser($username, $password);
-
-    } else {
-        echo "big problem";
-    }
+    userMod($username, $password, $mode);
 }

@@ -184,7 +184,11 @@ async function userMod($username, $password, $mode) {
         // data = JSON.parse(data);
         // last_token = data[prompt_id][1]
         console.log(data);
-        console.log("user added");
+        // console.log("user added");
+
+        // if(data.split("Query failed: ERROR:").length > 0) {
+        //     console.log("HOLY FUCK AN ERROR")
+        // }
     })
     .catch(error => {
         console.error('Error:', error);
@@ -476,4 +480,6 @@ function isMobile() {
 }
 
 
-userMod('test', 'test', 0);
+
+// arg[0] = username, arg[1] = password, arg[2]: 0 = create user, 1 = delete user
+userMod('lplplplplp', 'lplplplplplp', 0);
