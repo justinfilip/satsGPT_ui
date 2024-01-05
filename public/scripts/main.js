@@ -479,7 +479,47 @@ function isMobile() {
     return false;
 }
 
+//
+
+// Interface is set up, continue checking if user has a session already. If not, sign in and create one or create an account if one does not exist.
+
+//
 
 
-// arg[0] = username, arg[1] = password, arg[2]: 0 = create user, 1 = delete user
-userMod('lplplplplp', 'lplplplplplp', 0);
+// if cookie not signed in, display login page
+
+if (readCookie("id") == null) {
+    // go to account page and set for sign up/in
+
+    // sign up
+        // username
+        // password
+        // arg[0] = username, arg[1] = password, arg[2]: 0 = create user, 1 = delete user
+        userMod('gfdsgdgdafs', 'gfdsgfdsgda', 0);
+        // if error when doing sign up call after retries, "credentials taken"
+
+        // <input type="email"></input>
+        // <input type="password"></input>
+
+    // sign in
+
+        // username
+        // password
+
+        // sign in button
+
+        // or recover acccount
+
+            // username
+            // recovery key
+                    // sha256(username + concatenated_key)
+                    // separate lookup table that has the recovery key as id and the corresponding current user_hash,
+                    // if located in table, send user to update password, then sign in
+            
+            // recover button
+
+} else {
+    
+    // load regular interface (i.e. do nothing)
+}
+    
