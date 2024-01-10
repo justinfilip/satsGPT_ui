@@ -9,6 +9,43 @@
 // # user_id= message.get('user_id') # Bitcoin/lightning address
 // # password = message.get('password')
 
+if (readCookie("id") == null) {
+    // go to account page and set for sign up/in
+    document.getElementById("accountbutton").pointerdown();
+    // sign up
+        // username
+        // password
+        // arg[0] = username, arg[1] = password, arg[2]: 0 = create user, 1 = delete user
+        userMod('gfdsgdgdafs', 'gfdsgfdsgda', 0);
+        // if error when doing sign up call after retries, "credentials taken"
+
+        // <input type="email"></input>
+        // <input type="password"></input>
+
+    // sign in
+
+        // username
+        // password
+
+        // sign in button
+
+        // or recover acccount
+
+            // username
+            // recovery key
+                    // sha256(username + concatenated_key)
+                    // separate lookup table that has the recovery key as id and the corresponding current user_hash,
+                    // if located in table, send user to update password, then sign in
+            
+            // recover button
+
+} else {
+    
+    // load regular interface (i.e. do nothing)
+}
+
+
+
 const history_container = document.getElementById("history_window");
 const text_input = document.getElementById("text_input");
 const prompt_page = document.getElementById("promptpage");
@@ -18,7 +55,7 @@ const prompt_actions = document.getElementById("prompt_actions");
 const keys_toggle = document.getElementById("keys_toggle");
 const send_button = document.getElementById("text_input_send_button");
 const send_tip = document.getElementById("send_tip");
-
+var promptable = 1
 var display_mode = ""
 var display_mode_cookie = readCookie('display_mode');
 
@@ -205,27 +242,37 @@ async function getTokens(prompt_id, last_token) {
     .then(response => response.json())
     .then(data => {
 
-        // console.log(data);
-        // data = JSON.parse(data);
         last_token = data[prompt_id][1]
 
         if (data[prompt_id][0] === 1) {
 
             try {
-                document.getElementById(prompt_id).innerText += ' ' + data[prompt_id][2];
+                token_payload = data[prompt_id][2];
+            
+                if (token_payload == "") {
+                    console.log("waiting");
+                    setTimeout(function(){
+                        getTokens(prompt_id, last_token);
+                    }, 1000);
+                } else {
+                    document.getElementById(prompt_id).innerText += ' ' + token_payload;
+                    
+                    setTimeout(function(){
+                        getTokens(prompt_id, last_token);
+                    }, 350);
+                }
             } catch {
                 // Element was likely deleted by user canceling inference task
                 return
             }
- 
-            setTimeout(function (e) {
-                getTokens(prompt_id, last_token);
-            }, 2500);
             
         } else if (data[prompt_id][0] === 0) {
 
             try {
                 document.getElementById(prompt_id).innerText += ' ' + data[prompt_id][2];
+                promptable = 1;
+                send_button.className = "text-input-send-button";
+
             } catch {
                 // Element was likely deleted by user canceling inference task
                 return
@@ -234,7 +281,7 @@ async function getTokens(prompt_id, last_token) {
             setTimeout(function (e) {
                 document.getElementById("prompt_" + prompt_id).className = display_mode + "history-prompt-element";
                 document.getElementById("action_" + prompt_id).className = display_mode + "history-prompt-element-cancel-button-hidden";
-            }, 2500);
+            }, 1000);
             return
 
         } else {
@@ -360,7 +407,7 @@ async function sendPrompt(prompt) {
             
             setTimeout(function (e) {
                 getTokens(prompt_id, last_token);
-            }, 5000);
+            }, 2000);
 
         } else {
             text_input.innerText = "What do you think?";
@@ -374,30 +421,35 @@ async function sendPrompt(prompt) {
 // Sending prompts
 
 // Make sure the user's prompt is formatted properly:
-
+// var promptable = 0
 async function validateSendPrompt(send_button, prompt) {
-    if(prompt.length < 5 || text_input.innerHTML == '<i id="placeholder">Write your prompt here</i>') {
-        send_button.className = "text-input-send-button-rejected";
-        setTimeout(function (e) {
-            send_button.className = "text-input-send-button";
-        }, 300);
-        // Let the user know the prompt isn't long enough
-        return
 
-    } else {
-        send_button.className = "text-input-send-button-selected";
-        setTimeout(function (e) {
-            send_button.className = "text-input-send-button";
-        }, 300);
-        sendPrompt(prompt);
+    if (promptable == 1) {
+        promptable = 0;
+        if(prompt.length < 5 || text_input.innerHTML == '<i id="placeholder">Write your prompt here</i>') {
+            send_button.className = "text-input-send-button-rejected";
+            setTimeout(function (e) {
+                send_button.className = "text-input-send-button";
+            }, 300);
+            // Let the user know the prompt isn't long enough
+            return
+    
+        } else {
+            send_button.className = "text-input-send-button-selected";
+            // setTimeout(function (e) {
+            //     send_button.className = "text-input-send-button";
+            // }, 300);
+            sendPrompt(prompt);
+        }
     }
+    
 }
 
 // Send button to send
 
 send_button.addEventListener('pointerdown', async function(e) {
 
-    var prompt = text_input.innerText
+    var prompt = text_input.innerText;
     // text_input.className = display_mode + "text-input-closed";
     // text_input_open = 0;
     validateSendPrompt(send_button, prompt);
@@ -488,38 +540,5 @@ function isMobile() {
 
 // if cookie not signed in, display login page
 
-if (readCookie("id") == null) {
-    // go to account page and set for sign up/in
 
-    // sign up
-        // username
-        // password
-        // arg[0] = username, arg[1] = password, arg[2]: 0 = create user, 1 = delete user
-        userMod('gfdsgdgdafs', 'gfdsgfdsgda', 0);
-        // if error when doing sign up call after retries, "credentials taken"
-
-        // <input type="email"></input>
-        // <input type="password"></input>
-
-    // sign in
-
-        // username
-        // password
-
-        // sign in button
-
-        // or recover acccount
-
-            // username
-            // recovery key
-                    // sha256(username + concatenated_key)
-                    // separate lookup table that has the recovery key as id and the corresponding current user_hash,
-                    // if located in table, send user to update password, then sign in
-            
-            // recover button
-
-} else {
-    
-    // load regular interface (i.e. do nothing)
-}
     
