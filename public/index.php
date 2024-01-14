@@ -42,9 +42,57 @@
         </div>
 
         <div id="accountpage" class="hidden">
-            <center>
-                C
-            </center>
+            <div id="account-details" class="account_details">
+
+            </div>
+            <div id="account-auth" class="hidden">
+                <center>
+                <!-- // sign up
+                    // username
+                    // password
+                    // arg[0] = username, arg[1] = password, arg[2]: 0 = create user, 1 = delete user, 2 = modify user
+                    // userMod('ssdsdsds', 'qwerqwerqwrewqrerqw', 0);
+                    // if error when doing sign up call after retries, "credentials taken" -->
+                    <form autocomplete="on">
+                        <div class="auth-text">Sign in to your satsGPT account or click "Sign up" to create an account</div>
+                        <div id="error-div" class="auth-error-text"></div>
+                        <div class="auth-container">
+                            
+                            <div tabindex="1" id="sign-in-button" class="auth-mode-button-selected">Sign in</div>
+                            <div tabindex="2" id="sign-up-button" class="auth-mode-button">Sign up</div>
+                        </div>
+                        
+                        <input tabindex="3" id="username-field" type="text" name="username" maxlength="20" title="Your username" autocomplete="username" placeholder="Username" value="" autocapitalize="off" autocorrect="off" class="username-input">
+
+
+                        <input tabindex="4" id="password-field" type="password" name="password" maxlength="32" title="Your password" placeholder="Password" autocomplete="current-password" class="password-input">
+
+                        <input tabindex="5" id="confirm-password-field" type="password" name="conf_password" maxlength="32" title="Password Confirmation" placeholder="Confirm password" autocomplete="new-password" class="hidden">
+
+                        <div class="auth-container">
+                            <div tabindex="6" id="auth-submit-button" class="auth-submit-button">Submit</div>
+                        </div>
+                    </form>
+
+                <!-- // sign in
+
+                    // username
+                    // password
+
+                    // sign in button
+
+                    // or recover acccount
+
+                        // username
+                        // recovery key
+                                // sha256(username + concatenated_key)
+                                // separate lookup table that has the recovery key as id and the corresponding current user_hash,
+                                // if located in table, send user to update password, then sign in
+                        
+                        // recover button -->
+
+                </center>
+            </div>
         </div>
 
         <div id="aboutpage" class="hidden">

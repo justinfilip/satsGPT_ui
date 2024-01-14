@@ -20,7 +20,7 @@
 }
 
 .dark_history-prompt-element {
-    background-color: #d5d5d51c;
+    background-color: #0f0f0f;
     color: #ffffff;
     width: 100%;
     height: auto;
@@ -29,12 +29,12 @@
     font-size: 17px;
     word-break: break-word;
     display: inline-block;
-    border-radius: 7px;
+    border-radius: 5px;
     transition: .2s;
 }
 
 .dark_history-prompt-element-loading {
-    background: linear-gradient(-45deg, #d5d5d51c, #d5d5d51c, #ff99002e, #d5d5d51c);
+    background: linear-gradient(-45deg, #0f0f0f, #0f0f0f, #ff990044, #0f0f0f);
 	background-size: 500% 450%;
 	animation: gradient 4.20s ease infinite;
     color: #ffffff;
@@ -47,7 +47,7 @@
     word-break: break-word;
     display: inline-block;
     /* filter: drop-shadow(2px 2px 2px #f1f1f181); */
-    border-radius: 7px;
+    border-radius: 5px;
     transition: .4s;
     scroll-margin-top: 150px;
     /* border-bottom: 1px solid #0000; */
@@ -169,6 +169,16 @@
 
 .dark_navbuttonselected {
     color: #ffffff;
+    display: inline-block;
+    padding: 10px;
+    padding-left: 13px;
+    padding-right: 13px;
+    height: 40px;
+    transition: .2s;
+}
+
+.dark_navbuttondisabled {
+    color: #0d0d0d;
     display: inline-block;
     padding: 10px;
     padding-left: 13px;
