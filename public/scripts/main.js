@@ -511,7 +511,7 @@ async function userMod(username, password, mode, error_div) {
 
         } else {
             setCookie('id', returned_id, "; max-age=2592000;");
-            setCookie('ba', data['btc_address'], "; max-age=2592000;");
+            setCookie('ba', data['last_payment_address'], "; max-age=2592000;");
             error_div.innerHTML = "Authentication successful";
             setTimeout(function(e) {window.location.reload();}, 500);
         }
@@ -544,7 +544,7 @@ async function getUser(user_id) {
         returned_id  = data['user_id'];
         // wether or not the subscription is active
         sub_status = data['sub_status'];
-        btc_address = data['btc_address'];
+        last_payment_address = data['last_payment_address'];
         expiry_time = data['expiry_time']; // in datetime
         
         if(sub_status === false) {
