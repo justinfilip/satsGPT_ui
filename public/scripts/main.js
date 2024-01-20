@@ -541,16 +541,18 @@ async function getUser(user_id) {
         console.log(data);
 
         // 'id' is a unique key that is to be used for making API requests, it is separate from the username and password
-        returned_id  = data['user_id'];
-        // wether or not the subscription is active
-        sub_status = data['sub_status'];
-        last_payment_address = data['last_payment_address'];
-        expiry_time = data['expiry_time']; // in datetime
+        // returned_id  = data['user_id'];
+        // // wether or not the subscription is active
+        // sub_status = data['sub_status'];
+        // last_payment_address = data['last_payment_address'];
+        // expiry_time = data['expiry_time']; // in datetime
         
-        if(sub_status === false) {
-            // present payment screen
+        // if(sub_status === false) {
+        //     // present payment screen
             
-        }
+        // }
+
+        return data;
         // populate account page
 
         // username
@@ -601,7 +603,17 @@ if (readCookie("id") == null) {
     // Continue as normal
 
     // check user information and populate account page
-    getUser(readCookie('id'));
+    const user_payload = getUser(readCookie('id'));
+
+    returned_id  = user_payload['user_id'];
+    // wether or not the subscription is active
+    // last_payment_address = user_payload['last_payment_address'];
+    expiry_time = user_payload['expiry_time']; // in datetime
+    
+    if(expiry_time === 0) {
+        // present payment screen
+        
+    }
 }
 
 
@@ -616,7 +628,6 @@ const submit_auth_button = document.getElementById("auth-submit-button");
 sign_up_button.addEventListener('click', function(e) {
     sign_in_button.className = "auth-mode-button";
     sign_up_button.className = "auth-mode-button-selected";
-    password_field.attributes.autocomplete = "new-password";
     confirm_password_field.className = "password-input";
     
 });

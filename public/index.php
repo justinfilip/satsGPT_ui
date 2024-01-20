@@ -65,7 +65,7 @@
                         <input tabindex="3" id="username-field" type="text" name="username" maxlength="20" title="Your username" autocomplete="username" placeholder="Username" value="" autocapitalize="off" autocorrect="off" class="username-input">
 
 
-                        <input tabindex="4" id="password-field" type="password" name="password" maxlength="32" title="Your password" placeholder="Password" autocomplete="current-password" class="password-input">
+                        <input tabindex="4" id="password-field" type="password" name="password" maxlength="32" title="Your password" placeholder="Password" autocomplete="new-password" class="password-input">
 
                         <input tabindex="5" id="confirm-password-field" type="password" name="conf_password" maxlength="32" title="Password Confirmation" placeholder="Confirm password" autocomplete="new-password" class="hidden">
 
