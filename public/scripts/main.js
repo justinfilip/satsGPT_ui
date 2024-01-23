@@ -511,9 +511,9 @@ async function userMod(username, password, mode, error_div) {
 
         } else {
             setCookie('id', returned_id, "; max-age=2592000;");
-            setCookie('ba', data['last_payment_address'], "; max-age=2592000;");
+            // setCookie('ba', data['r_hash'], "; max-age=2592000;");
             error_div.innerHTML = "Authentication successful";
-            setTimeout(function(e) {window.location.reload();}, 500);
+            setTimeout(function(e) {window.location.reload();}, 3000);
         }
     })
     .catch(error => {
@@ -538,13 +538,13 @@ async function getUser(user_id) {
     
         console.log(data);
         data = JSON.parse(data);
-        console.log(data);
+        // console.log(data);
 
         // 'id' is a unique key that is to be used for making API requests, it is separate from the username and password
         // returned_id  = data['user_id'];
         // // wether or not the subscription is active
         // sub_status = data['sub_status'];
-        // last_payment_address = data['last_payment_address'];
+        // r_hash = data['r_hash'];
         // expiry_time = data['expiry_time']; // in datetime
         
         // if(sub_status === false) {
@@ -552,7 +552,6 @@ async function getUser(user_id) {
             
         // }
 
-        return data;
         // populate account page
 
         // username
@@ -564,10 +563,109 @@ async function getUser(user_id) {
 
         // 
 
+
+        returned_id  = data['user_id'];
+        // // wether or not the subscription is active
+        // // r_hash = user_payload['r_hash'];
+        expiry_time = data['expiry_time']; // in datetime
+        console.log(expiry_time)
+
+        // user subscription expired or user just created, present payment screen
+        // user expire time < current time
+        if (expiry_time <= Date.now()) {
+            console.log(Date.now())
+
+            collectUserPayment(returned_id);
+        }
+
     })
     .catch(error => {
         console.error('Error:', error);
     });
+}
+
+
+function collectUserPayment(returned_id) {
+    const prompt_button = document.getElementById("promptbutton");
+    prompt_button.className = display_mode + 'navbuttondisabled';
+    prompt_button.removeEventListener('pointerdown', function(e){});
+    promptable = 0;
+
+    // load sign up/in page
+    var nav_buttons = document.getElementsByClassName(display_mode + "navbutton");
+    
+    document.getElementById("accountbutton").className = display_mode + 'navbuttonselected';
+    document.getElementById("promptpage").className = "hidden";
+    text_input.className = "hidden";
+    prompt_actions.className = "hidden";
+    keys_toggle.className = "hidden";
+    send_button.className = "hidden";
+    send_tip.className = "hidden";
+
+    document.getElementById("accountpage").innerHTML = "fjdskljf;kldsajfl;dsaj";
+    document.getElementById("accountpage").className = "activepage";
+
+
+    var request_body = {
+        user_id: returned_id,
+        server_mode: 0 // 0 = get invoice, 1 = check address
+    }
+
+    fetch('scripts/payment.php', {
+        method: 'POST',
+        body: JSON.stringify(request_body)
+    })
+    .then(response => response.text()) //.json()
+    .then(data => {
+    
+        console.log(data);
+        data = JSON.parse(data);
+
+        // get payment_request from response
+        let payment_request = data['payment_request'];
+        console.log("Payment request: " + payment_request);
+
+        setTimeout(checkInvoice(returned_id), 1000);
+
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+
+
+    function checkInvoice(user_id) {
+        var request_body = {
+            user_id: user_id,
+            server_mode: 1 // 0 = get invoice, 1 = check address
+        }
+    
+        fetch('scripts/payment.php', {
+            method: 'POST',
+            body: JSON.stringify(request_body)
+        })
+        .then(response => response.text()) //.json()
+        .then(data => {
+        
+            console.log(data);
+            data = JSON.parse(data);
+    
+            // if response contains confirmed payment (expiry time > now by whatever)
+            // reload interface with expiry time cookie
+            
+            // else
+
+            setTimeout(checkInvoice(returned_id), 1000);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+
+
+
+
 }
 
 //
@@ -603,17 +701,8 @@ if (readCookie("id") == null) {
     // Continue as normal
 
     // check user information and populate account page
-    const user_payload = getUser(readCookie('id'));
+    getUser(readCookie('id'));
 
-    returned_id  = user_payload['user_id'];
-    // wether or not the subscription is active
-    // last_payment_address = user_payload['last_payment_address'];
-    expiry_time = user_payload['expiry_time']; // in datetime
-    
-    if(expiry_time === 0) {
-        // present payment screen
-        
-    }
 }
 
 
