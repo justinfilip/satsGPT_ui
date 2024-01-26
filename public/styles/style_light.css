@@ -11,6 +11,10 @@ html {
     
 }
 
+.qr-div {
+    margin: 20px;
+}
+
 .satsGPT {
     position: fixed;
     top: 300px;
@@ -421,7 +425,7 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    padding-top: 250px;
+    padding-top: 17%;
     /* border: 1px solid #ff0000; */
 }
 
@@ -464,7 +468,7 @@ html {
     color: #121111;
     display: inline-block;
     height: 100%;
-    width: 49%;
+    width: 48.9%;
     border-radius: 3px;
     padding-top: 8px;
     border-bottom: 1px solid #00000021;
@@ -480,7 +484,7 @@ html {
     background-color: #ffe7c4;
     display: inline-block;
     height: 100%;
-    width: 49%;
+    width: 48.9%;
     border-radius: 3px;
     padding-top: 8px;
     border-bottom: 1px solid #00000021;
@@ -497,7 +501,7 @@ html {
     color: #ffffff;
     display: inline-block;
     height: 100%;
-    width: 49%;
+    width: 48.5%;
     border-radius: 3px;
     padding-top: 8px;
     border-bottom: 1px solid #00000021;
@@ -545,7 +549,7 @@ html {
 
 .username-input {
     position: relative;
-    width: 90%;
+    width: 89%;
     max-width: 300px;
     height: 30px;
     margin: 5px;
@@ -560,7 +564,7 @@ html {
 .username-input:hover {
     background-color: #ffe7c4;
     position: relative;
-    width: 90%;
+    width: 89%;
     max-width: 300px;
     height: 30px;
     margin: 5px;
@@ -574,7 +578,7 @@ html {
 
 .password-input {
     position: relative;
-    width: 90%;
+    width: 89%;
     max-width: 300px;
     height: 30px;
     margin: 5px;
@@ -589,7 +593,7 @@ html {
 .password-input:hover {
     background-color: #ffe7c4;
     position: relative;
-    width: 90%;
+    width: 89%;
     max-width: 300px;
     height: 30px;
     margin: 5px;
