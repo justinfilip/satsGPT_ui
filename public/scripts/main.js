@@ -170,7 +170,7 @@ async function getTokens(prompt_id, last_token) {
                 token_payload = data[prompt_id][2];
             
                 if (token_payload == "") {
-                    console.log("waiting");
+                    // console.log("waiting");
                     setTimeout(function(){
                         getTokens(prompt_id, last_token);
                     }, 1000);
@@ -390,6 +390,31 @@ keys_toggle.addEventListener('pointerdown', function(e) {
 
 // Auxillary functions:
 
+function msToLocalDateTime(millis) {
+    // Create a new Date object from the input milliseconds
+    const date = new Date(millis);
+    
+    // Get the user's time zone offset in minutes
+    const timeZoneOffset = date.getTimezoneOffset();
+    
+    // Convert the time zone offset to milliseconds
+    const timeZoneOffsetMilliseconds = timeZoneOffset * 60 * 1000;
+    
+    // Subtract the time zone offset from the input milliseconds
+    // to get the local date and time
+    const localDateAndTimeMillis = millis - timeZoneOffsetMilliseconds;
+    
+    // Create a new Date object with the local date and time
+    const localDate = new Date(localDateAndTimeMillis);
+    
+    // Format the local date and time as a string
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    const localDateTimeString = localDate.toLocaleString('en-US', options);
+    
+    // Return the formatted local date and time string
+    return localDateTimeString;
+}
+
 function readCookie(name) {
         
     return (name = new RegExp('(?:^|;\\s*)' + ('' + name).replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + '=([^;]*)').exec(document.cookie)) && name[1];
@@ -492,6 +517,15 @@ async function getUser(user_id) {
         if (expiry_time <= Date.now()) {
 
             collectUserPayment(returned_id);
+        } else {
+
+            const account_info_container = document.createElement('center');
+            const account_info = document.createElement('div');
+            account_info.innerHTML = '<b>Subscription expiration date:</b></br></br>' + msToLocalDateTime(expiry_time) + ', in your detected timezone.</br></br>When your subscription expires, you will be prompted to renew it.</br></br>Thank you for using satsGPT!';
+            account_info.className = 'account-info-text';
+
+            account_info_container.appendChild(account_info);
+            document.getElementById("accountpage").appendChild(account_info_container);
         }
 
     })
@@ -532,22 +566,29 @@ function collectUserPayment(returned_id) {
     .then(response => response.text()) //.json()
     .then(data => {
     
-        console.log(data);
+        // console.log(data);
         data = JSON.parse(data);
 
         // get payment_request from response
         let payment_request = data['payment_request'];
-        console.log("Payment request: " + payment_request);
+        // console.log("Payment request: " + payment_request);
 
-        const qr_div = document.createElement('center');
+        let amount_sats = data['amount_sats'];
+        let btc_price = data['btc_price']
+
+        const payment_container = document.createElement('center');
+        payment_container.className = 'payment-container';
+
+
+        const qr_div = document.createElement('div');
         qr_div.id = 'qr-div';
         qr_div.className = 'qr-div';
 
         const payment_text_element = document.createElement('div');
         
         payment_text_element.id = "payment-text-element";
-        payment_text_element.className = "auth-text";
-        payment_text_element.innerHTML = "Pay this $5 lightning invoice for 30 days of access"
+        payment_text_element.className = "pay-text";
+        payment_text_element.innerHTML = "<b>Pay this $5 lightning invoice (" + amount_sats + " sats @ $" + btc_price + " USD/Bitcoin) for 30 days of access to satsGPT. By paying this invoice, you are agreeing to the terms & conditions listed at the bottom of this page</b>";
 
         const payment_notification_element = document.createElement('div');
 
@@ -557,7 +598,12 @@ function collectUserPayment(returned_id) {
         qr_div.prepend(payment_notification_element);
         qr_div.prepend(payment_text_element);
 
-        document.getElementById("accountpage").appendChild(qr_div);
+        payment_container.prepend(payment_notification_element);
+        payment_container.prepend(payment_text_element);
+        payment_container.appendChild(qr_div);
+        
+
+        document.getElementById("accountpage").appendChild(payment_container);
 
         const qr_element = document.getElementById("qr-div");
 
@@ -570,6 +616,30 @@ function collectUserPayment(returned_id) {
         });
         
         qrCode.makeCode(payment_request);
+
+
+
+        const invoice_text_container = document.createElement('center');
+        const invoice_text = document.createElement('center');
+        invoice_text.innerHTML = payment_request;
+        invoice_text.className = 'invoice-text-container';
+
+        // invoice_text_container.addEventListener('click', function(e) {
+
+        // });
+
+        let terms_conditions_text = document.createElement('div');
+        terms_conditions_text.className = "terms-conditions-text";
+        terms_conditions_text.innerHTML = "<b>Terms & Conditions:</b></br></br>\
+        1. Your personal information is not collected unless voluntarily included in your username. If that occurs, that's your problem, so it is suggested that you do not include sensitive personal information in your username.</br></br>\
+        2. This service will be available to you for the duration of 30 days, not including maintenance windows and service interruptions. Any pre-planned maintenance windows will be announced 24 hours in advance, within this application. At the time of account creation, you were provided a recovery key for your account. This recovery key is the only way to recover your account and it is your responsibility to keep it safe.</br></br>\
+        3. Your interaction data (prompts, token output) with the open-source models used in this application exists momentarily on the server as it is being processed or generated and is deleted after your prompt has completed processing. You are responsible for saving outputs that you want to use later.</br></br>\
+        4. Performance and usage data will be used to improve the service.</br></br>\
+        5. You will be solely responsible for how you use and interpret the data generated in this application, and you release satsGPT and related or affiliated persons or entities from liability in any and all instances where data from this application was used or interpreted in a way that harms yourself or others both directly and indrectly by way of the use of this application or the use of 3rd party application code within this program."
+
+        invoice_text_container.appendChild(invoice_text);
+        invoice_text_container.appendChild(terms_conditions_text);
+        document.getElementById("accountpage").appendChild(invoice_text_container);
 
         
 
@@ -595,7 +665,7 @@ function collectUserPayment(returned_id) {
         .then(response => response.text()) //.json()
         .then(data => {
         
-            console.log(data);
+            // console.log(data);
             data = JSON.parse(data);
     
             // if response contains confirmed payment (expiry time > now by whatever)
@@ -697,27 +767,27 @@ submit_auth_button.addEventListener('click', function(e) {
         var confirm_password_value = confirm_password_field.value;
         // do input validation
         if(password_value === confirm_password_value) {
-            console.log("password and password confirmation match");
+            // console.log("password and password confirmation match");
 
             // check that the password contains at least one lowercase letter
             var format = /[a-z]/;
             if(format.test(password_value) === true) {
-                console.log("password contains at least one lowercase letter");
+                // console.log("password contains at least one lowercase letter");
 
                 // check that the password contains at least one uppercase letter
                 var format = /[A-Z]/;
                 if(format.test(password_value) === true) {
-                    console.log("password contains at least one lowercase letter");
+                    // console.log("password contains at least one lowercase letter");
 
                     // check that the password contains a special character
                     var format = /[ `!@#$%^&*()+_\-=\[\]{};':"\\|,.<>\/?~]/;
                     if(format.test(password_value) === true) {
-                        console.log("password contains a special character");
+                        // console.log("password contains a special character");
 
                         // check that the password contains a number
                         var format = /[0-9]/;
                         if(format.test(password_value) === true) {
-                            console.log("password contains a number");
+                            // console.log("password contains a number");
 
                             // check username length is at least 6
                             if(username_value.length >= 6) {

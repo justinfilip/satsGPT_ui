@@ -42,8 +42,6 @@
         </div>
 
         <div id="accountpage" class="hidden">
-            <div id="account-details" class="account_details">
-
             </div>
             <div id="account-auth" class="hidden">
                 <center>
