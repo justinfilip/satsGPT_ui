@@ -590,6 +590,21 @@ html {
     font-size: 12px;
 }
 
+.username-input-highlighted {
+    background-color: #ffe7c4;
+    position: relative;
+    width: 89%;
+    max-width: 297px;
+    height: 30px;
+    margin: 5px;
+    border: none;
+    border-radius: 3px;
+    padding: 10px;
+    transition: .2s;
+    border-bottom: 1px solid #00000021;
+    font-size: 12px;
+}
+
 .password-input {
     position: relative;
     width: 89%;

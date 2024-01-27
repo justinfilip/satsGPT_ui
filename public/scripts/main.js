@@ -752,12 +752,13 @@ sign_in_button.addEventListener('click', function(e) {
 
 recover_account_button.addEventListener('click', function(e) {
     
-    auth_mode = 1;
     const error_div = document.getElementById("error-div");
     error_div.innerHTML = "";
     console.log("what")
     var username_value = username_field.value;
     if (username_value.length >= 6) {
+
+        auth_mode = 1;
 
         const center_tag = document.createElement('center');
         center_tag.id = 'recovery-center-tag';
@@ -808,9 +809,80 @@ recover_account_button.addEventListener('click', function(e) {
         center_tag.appendChild(recovery_phrase_container);
         username_field.insertAdjacentElement('afterend', center_tag);
         
+    } else {
+        username_field.className = 'username-input-highlighted';
+        setTimeout(function() {username_field.className = 'username-input';}, 500);
     }
 
 });
+
+
+function credsValidation(username_value, password_value, error_div) {
+    // check username length is at least 6
+    if(username_value.length >= 6) {
+        // pass
+    } else {
+        error_div.innerHTML = "Username must be at least 6 characters";
+        return 0;
+    }
+
+    // check that username doesn't have special characters other than "_"
+    var format = /[ `!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~]/;
+    if(format.test(username_value) === false) {
+        
+        // pass
+
+    } else {
+        error_div.innerHTML = "Only underscore '_' special character allowed in username";
+        return 0;
+    }
+
+    // check that password is at least 8 characters
+    if(password_value.length >= 8) {
+        // pass
+    } else {
+        error_div.innerHTML = "Password must be at least 8 characters";
+        return 0;
+    }
+
+    // check that the password contains at least one lowercase letter
+    var format = /[a-z]/;
+    if(format.test(password_value) === true) {
+        // pass
+    } else {
+        error_div.innerHTML = "Password must contain at least one lowercase letter";
+        return 0;
+    }
+
+    // check that the password contains at least one uppercase letter
+    var format = /[A-Z]/;
+    if(format.test(password_value) === true) {
+        // pass
+    } else {
+        error_div.innerHTML = "Password must contain at least one uppercase letter";
+        return 0;
+    }
+
+    // check that the password contains a number
+    var format = /[0-9]/;
+    if(format.test(password_value) === true) {
+        // pass
+    } else {
+        error_div.innerHTML = "Password must contain a number";
+        return 0;
+    }
+
+    // check that the password contains a special character
+    var format = /[ `!@#$%^&*()+_\-=\[\]{};':"\\|,.<>\/?~]/;
+    if(format.test(password_value) === true) {
+        // pass
+    } else {
+        error_div.innerHTML = "Password must contain a special character";
+        return 0;
+    }
+
+    return 1;
+}
 
 
 submit_auth_button.addEventListener('click', function(e) {
@@ -826,66 +898,15 @@ submit_auth_button.addEventListener('click', function(e) {
 
         // 0 = sign in, 1 = create user, 2 = delete user, 3 = modify user
         if (sign_in_button.className === "auth-mode-button-selected") {
-            
+
             console.log("signing in");
             // 1 = create user
             var mode = 0;
-     
-            // do input validation
-            // check that the password contains at least one lowercase letter
-            var format = /[a-z]/;
-            if(format.test(password_value) === true) {
-                // console.log("password contains at least one lowercase letter");
 
-                // check that the password contains at least one uppercase letter
-                var format = /[A-Z]/;
-                if(format.test(password_value) === true) {
-                    // console.log("password contains at least one lowercase letter");
-
-                    // check that the password contains a special character
-                    var format = /[ `!@#$%^&*()+_\-=\[\]{};':"\\|,.<>\/?~]/;
-                    if(format.test(password_value) === true) {
-                        // console.log("password contains a special character");
-
-                        // check that the password contains a number
-                        var format = /[0-9]/;
-                        if(format.test(password_value) === true) {
-                            // console.log("password contains a number");
-
-                            // check username length is at least 6
-                            if(username_value.length >= 6) {
-
-                                // check that username doesn't have special characters other than "_"
-                                var format = /[ `!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~]/;
-                                if(format.test(username_value) === false) {
-                                    
-                                    // arg[0] = username, arg[1] = password, arg[2]: 0 = sign in, 1 = create user, 2 = delete user, 3 = modify user
-                                    userMod(username_value, password_field.value, mode, error_div);
-
-                                } else {
-                                    error_div.innerHTML = "Only underscore '_' special character allowed in username";
-                                }
-
-                            } else {
-                                error_div.innerHTML = "Username must be at least 6 characters";
-                            }
-                            
-                        } else {
-                            error_div.innerHTML = "Password must contain a number";
-                        }
-
-                    } else {
-                        error_div.innerHTML = "Password must contain a special character";
-                    }
-
-                } else {
-                    error_div.innerHTML = "Password must contain at least one uppercase letter";
-                }
-
-            } else {
-                error_div.innerHTML = "Password must contain at least one lowercase letter";
+            if (credsValidation(username_value, password_value, error_div) === 1) {
+                userMod(username_value, password_value, mode, error_div);
             }
-    
+
         } else {
 
             console.log("signing up");
@@ -893,70 +914,18 @@ submit_auth_button.addEventListener('click', function(e) {
             // 1 = create user
             var mode = 1;
     
-            var username_value = username_field.value;
-            var password_value = password_field.value;
+
             var confirm_password_value = confirm_password_field.value;
             // do input validation
             if(password_value === confirm_password_value) {
-                // console.log("password and password confirmation match");
-    
-                // check that the password contains at least one lowercase letter
-                var format = /[a-z]/;
-                if(format.test(password_value) === true) {
-                    // console.log("password contains at least one lowercase letter");
-    
-                    // check that the password contains at least one uppercase letter
-                    var format = /[A-Z]/;
-                    if(format.test(password_value) === true) {
-                        // console.log("password contains at least one lowercase letter");
-    
-                        // check that the password contains a special character
-                        var format = /[ `!@#$%^&*()+_\-=\[\]{};':"\\|,.<>\/?~]/;
-                        if(format.test(password_value) === true) {
-                            // console.log("password contains a special character");
-    
-                            // check that the password contains a number
-                            var format = /[0-9]/;
-                            if(format.test(password_value) === true) {
-                                // console.log("password contains a number");
-    
-                                // check username length is at least 6
-                                if(username_value.length >= 6) {
-    
-                                    // check that username doesn't have special characters other than "_"
-                                    var format = /[ `!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~]/;
-                                    if(format.test(username_value) === false) {
-                                        
-                                        // arg[0] = username, arg[1] = password, arg[2]: 0 = sign in, 1 = create user, 2 = delete user, 3 = modify user
-                                        userMod(username_value, password_field.value, mode, error_div);
-    
-                                    } else {
-                                        error_div.innerHTML = "Only underscore '_' special character allowed in username";
-                                    }
-    
-                                } else {
-                                    error_div.innerHTML = "Username must be at least 6 characters";
-                                }
-                                
-                            } else {
-                                error_div.innerHTML = "Password must contain a number";
-                            }
-    
-                        } else {
-                            error_div.innerHTML = "Password must contain a special character";
-                        }
-    
-                    } else {
-                        error_div.innerHTML = "Password must contain at least one uppercase letter";
-                    }
-    
-                } else {
-                    error_div.innerHTML = "Password must contain at least one lowercase letter";
+                if (credsValidation(username_value, password_value, error_div) === 1) {
+                    userMod(username_value, password_value, mode, error_div);
                 }
-    
             } else {
                 error_div.innerHTML = "Passwords do not match";
             }
+
+
         }
 
     // recover account
