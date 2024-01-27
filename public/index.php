@@ -42,6 +42,8 @@
         </div>
 
         <div id="accountpage" class="hidden">
+            <div id="account-details" class="account_details">
+
             </div>
             <div id="account-auth" class="hidden">
                 <center>
@@ -54,7 +56,7 @@
                     <form autocomplete="on">
                         <div class="auth-text">Sign in to your satsGPT account or click "Sign up" to create an account</div>
                         <div id="error-div" class="auth-error-text"></div>
-                        <div class="auth-container">
+                        <div id="auth-container" class="auth-container">
                             
                             <div tabindex="1" id="sign-in-button" class="auth-mode-button-selected">Sign in</div>
                             <div tabindex="2" id="sign-up-button" class="auth-mode-button">Sign up</div>
@@ -68,7 +70,10 @@
                         <input tabindex="5" id="confirm-password-field" type="password" name="conf_password" maxlength="32" title="Password Confirmation" placeholder="Confirm password" autocomplete="new-password" class="hidden">
 
                         <div class="auth-container">
-                            <div tabindex="6" id="auth-submit-button" class="auth-submit-button">Submit</div>
+
+                            <div tabindex="7" id="recover-account-button" class="auth-mode-button">Recover Account</div>
+                            <div tabindex="6" id="auth-submit-button" class="auth-mode-button">Submit</div>
+
                         </div>
                     </form>
 

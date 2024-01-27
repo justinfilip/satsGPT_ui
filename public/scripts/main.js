@@ -10,6 +10,7 @@ const send_tip = document.getElementById("send_tip");
 var promptable = 1;
 var display_mode = "";
 var display_mode_cookie = readCookie('display_mode');
+var auth_mode = 0;
 
 if (display_mode_cookie == null) {
     display_mode = "light_";
@@ -457,40 +458,38 @@ async function userMod(username, password, mode, error_div) {
         server_mode: 0
     }
 
+    console.log("making request");
+
     fetch('scripts/user.php', {
         method: 'POST',
         body: JSON.stringify(request_body)
     })
     .then(response => response.text()) //.json()
     .then(data => {
-    
-        data = JSON.parse(data);
 
-        // 'id' is a unique key that is to be used for making prompt requests, it is separate from the username and password
-        returned_id  = data['id'];
+        try {
+            data = JSON.parse(data);
 
-        if(returned_id === -1) {
-            
-            // sign in failed
-            error_div.innerHTML = "Sign in failed, please try again later";
+            // 'id' is a unique key that is to be used for making prompt requests, it is separate from the username and password
+            returned_id  = data['id'];
 
-        } else if(returned_id === -2) {
+            if (returned_id === 0) {
 
-            // username not available
-            error_div.innerHTML = "Username is not available";
+                error_div.innerHTML = "No user exists by that name";
 
-        } else if(returned_id === -3) {
+            } else {
+                setCookie('id', returned_id, "");
+                console.log(readCookie('id'));
+                error_div.innerHTML = "Authentication successful";
+                setTimeout(function(e) {window.location.reload();}, 1500);
+            }
 
-            // username invalid at the server end, how did you get here??
-            error_div.innerHTML = "You shouldn't be here, call someone";
-
-        } else {
-            setCookie('id', returned_id, "; max-age=2592000;");
-            error_div.innerHTML = "Authentication successful";
-            setTimeout(function(e) {window.location.reload();}, 1500);
+        } catch {
+            error_div.innerHTML = "An error occurred, please refresh the page and try again";
         }
     })
     .catch(error => {
+        console.log("error");
         console.error('Error:', error);
     });
 }
@@ -509,7 +508,8 @@ async function getUser(user_id) {
     })
     .then(response => response.text())
     .then(data => {
-    
+        
+        console.log(data);
         data = JSON.parse(data);
         returned_id  = data['user_id'];
         expiry_time = data['expiry_time']; // in ms
@@ -690,7 +690,9 @@ function collectUserPayment(returned_id) {
 
 //
 
-if (readCookie("id") == null) {
+const stored_user_id = readCookie("id");
+
+if (stored_user_id == null) {
 
     const prompt_button = document.getElementById("promptbutton");
     prompt_button.className = display_mode + 'navbuttondisabled';
@@ -717,7 +719,7 @@ if (readCookie("id") == null) {
     // Continue as normal
 
     // check user information and populate account page
-    getUser(readCookie('id'));
+    getUser(stored_user_id);
 
 }
 
@@ -727,10 +729,12 @@ const sign_in_button = document.getElementById("sign-in-button");
 const username_field = document.getElementById("username-field");
 const password_field = document.getElementById("password-field");
 const confirm_password_field = document.getElementById("confirm-password-field");
+const recover_account_button = document.getElementById('recover-account-button');
 const submit_auth_button = document.getElementById("auth-submit-button");
 
 
 sign_up_button.addEventListener('click', function(e) {
+    auth_mode = 0;
     sign_in_button.className = "auth-mode-button";
     sign_up_button.className = "auth-mode-button-selected";
     confirm_password_field.className = "password-input";
@@ -738,6 +742,7 @@ sign_up_button.addEventListener('click', function(e) {
 });
 
 sign_in_button.addEventListener('click', function(e) {
+    auth_mode = 0;
     password_field.attributes.autocomplete = "current-password";
     confirm_password_field.className = "hidden";
     confirm_password_field.value = "";
@@ -745,30 +750,88 @@ sign_in_button.addEventListener('click', function(e) {
     sign_in_button.className = "auth-mode-button-selected";
 });
 
+recover_account_button.addEventListener('click', function(e) {
+    
+    auth_mode = 1;
+    const error_div = document.getElementById("error-div");
+    error_div.innerHTML = "";
+    console.log("what")
+    var username_value = username_field.value;
+    if (username_value.length >= 6) {
+
+        const center_tag = document.createElement('center');
+        center_tag.id = 'recovery-center-tag';
+        const recovery_phrase_container = document.createElement('center');
+        recovery_phrase_container.className = 'recovery-phrase-container';
+
+        // <input tabindex="3" id="username-field" type="text" name="username" maxlength="20" title="Your username" autocomplete="username" placeholder="Username" value="" autocapitalize="off" autocorrect="off" class="username-input"></input>
+
+        for (let i = 0; i < 12; i++) {
+
+            const word_box = document.createElement('input');
+            word_box.className = 'word-box';
+            word_box.id = 'wb' + i;
+            word_box.type = 'text';
+            word_box.maxLength = '20';
+            word_box.placeholder = 'Word ' + (i + 1);
+
+            recovery_phrase_container.appendChild(word_box);
+
+        }
+
+        /// get password fields, hide them, show word boxes between submit buttons and auth mode buttons after username
+        password_field.className = "hidden";
+        confirm_password_field.className = "hidden";
+        sign_in_button.className = "hidden";
+        sign_up_button.className = "hidden";
+        username_field.className = "hidden";
+        recover_account_button.className = "hidden";
+
+        const back_button = document.createElement('div');
+        back_button.id = 'back-button';
+        back_button.className = 'back-button';
+
+        back_button.addEventListener('click', function(e) {
+
+            document.getElementById('recovery-center-tag').className = 'hidden';
+            document.getElementById('back-button').className = 'hidden';
+            password_field.className = "password-input";
+            confirm_password_field.className = "password-input";
+            sign_in_button.className = "auth-mode-button";
+            sign_up_button.className = "auth-mode-button";
+            username_field.className = "username-input";
+            recover_account_button.className = "auth-mode-button";
+            sign_in_button.click();
+        });
+
+        document.getElementById('auth-container').prepend(back_button);
+        center_tag.appendChild(recovery_phrase_container);
+        username_field.insertAdjacentElement('afterend', center_tag);
+        
+    }
+
+});
+
 
 submit_auth_button.addEventListener('click', function(e) {
 
-    const error_div = document.getElementById("error-div");
+    var username_value = username_field.value;
+    var password_value = password_field.value;
 
-    // 0 = sign in, 1 = create user, 2 = delete user, 3 = modify user
-    if (sign_in_button.className == "auth-mode-button-selected") {
+    // sign in / up
+    if (auth_mode === 0) {
 
-        // 0 = sign in
-        var mode = 0;
-        userMod(username_field.value, password_field.value, mode, error_div);
+        console.log("signing");
+        const error_div = document.getElementById("error-div");
 
-    } else {
-
-        // 1 = create user
-        var mode = 1;
-
-        var username_value = username_field.value;
-        var password_value = password_field.value;
-        var confirm_password_value = confirm_password_field.value;
-        // do input validation
-        if(password_value === confirm_password_value) {
-            // console.log("password and password confirmation match");
-
+        // 0 = sign in, 1 = create user, 2 = delete user, 3 = modify user
+        if (sign_in_button.className === "auth-mode-button-selected") {
+            
+            console.log("signing in");
+            // 1 = create user
+            var mode = 0;
+     
+            // do input validation
             // check that the password contains at least one lowercase letter
             var format = /[a-z]/;
             if(format.test(password_value) === true) {
@@ -822,14 +885,84 @@ submit_auth_button.addEventListener('click', function(e) {
             } else {
                 error_div.innerHTML = "Password must contain at least one lowercase letter";
             }
-
+    
         } else {
-            error_div.innerHTML = "Passwords do not match";
+
+            console.log("signing up");
+    
+            // 1 = create user
+            var mode = 1;
+    
+            var username_value = username_field.value;
+            var password_value = password_field.value;
+            var confirm_password_value = confirm_password_field.value;
+            // do input validation
+            if(password_value === confirm_password_value) {
+                // console.log("password and password confirmation match");
+    
+                // check that the password contains at least one lowercase letter
+                var format = /[a-z]/;
+                if(format.test(password_value) === true) {
+                    // console.log("password contains at least one lowercase letter");
+    
+                    // check that the password contains at least one uppercase letter
+                    var format = /[A-Z]/;
+                    if(format.test(password_value) === true) {
+                        // console.log("password contains at least one lowercase letter");
+    
+                        // check that the password contains a special character
+                        var format = /[ `!@#$%^&*()+_\-=\[\]{};':"\\|,.<>\/?~]/;
+                        if(format.test(password_value) === true) {
+                            // console.log("password contains a special character");
+    
+                            // check that the password contains a number
+                            var format = /[0-9]/;
+                            if(format.test(password_value) === true) {
+                                // console.log("password contains a number");
+    
+                                // check username length is at least 6
+                                if(username_value.length >= 6) {
+    
+                                    // check that username doesn't have special characters other than "_"
+                                    var format = /[ `!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~]/;
+                                    if(format.test(username_value) === false) {
+                                        
+                                        // arg[0] = username, arg[1] = password, arg[2]: 0 = sign in, 1 = create user, 2 = delete user, 3 = modify user
+                                        userMod(username_value, password_field.value, mode, error_div);
+    
+                                    } else {
+                                        error_div.innerHTML = "Only underscore '_' special character allowed in username";
+                                    }
+    
+                                } else {
+                                    error_div.innerHTML = "Username must be at least 6 characters";
+                                }
+                                
+                            } else {
+                                error_div.innerHTML = "Password must contain a number";
+                            }
+    
+                        } else {
+                            error_div.innerHTML = "Password must contain a special character";
+                        }
+    
+                    } else {
+                        error_div.innerHTML = "Password must contain at least one uppercase letter";
+                    }
+    
+                } else {
+                    error_div.innerHTML = "Password must contain at least one lowercase letter";
+                }
+    
+            } else {
+                error_div.innerHTML = "Passwords do not match";
+            }
         }
+
+    // recover account
+    } else if (auth_mode === 1) {
+        console.log("recovering account");
     }
-
-
-
     
 });
 
