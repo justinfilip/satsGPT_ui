@@ -1,0 +1,24 @@
+{
+    "name": "satsGPT",
+    "short_name": "satsGPT",
+    "description": "Bitcoin enabled open-source artificial intelligence",
+    "start_url": "/index.php",
+    "display": "standalone",
+    "icons": [
+        {
+            "src": "/media/satsGPT_72.png",
+            "sizes": "72x72",
+            "type": "image/png"
+        },
+        {
+            "src": "/media/satsGPT_96.png",
+            "sizes": "96x96",
+            "type": "image/png"
+        },
+        {
+            "src": "/media/satsGPT_128.png",
+            "sizes": "128x128",
+            "type": "image/png"
+        }
+    ]
+}

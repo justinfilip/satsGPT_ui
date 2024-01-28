@@ -6,7 +6,7 @@
     padding-top: 5px;
     padding-bottom: 75vh;
     scrollbar-width: none;
-    transition: .2s;
+    transition: .2s ease-in-out;
 }
 
 .dark_toggle {
@@ -14,9 +14,9 @@
     width: 17px;
     height: 17px;
     right: 27px;
-    bottom: 17px;
+    bottom: 37px;
     z-index: 100;
-    transition: .2s;
+    transition: .2s ease-in-out;
 }
 
 .dark_history-prompt-element {
@@ -30,7 +30,7 @@
     word-break: break-word;
     display: inline-block;
     border-radius: 5px;
-    transition: .2s;
+    transition: .2s ease-in-out;
 }
 
 .dark_history-prompt-element-loading {
@@ -48,7 +48,7 @@
     display: inline-block;
     /* filter: drop-shadow(2px 2px 2px #f1f1f181); */
     border-radius: 5px;
-    transition: .4s;
+    transition: .2s ease-in-out;
     scroll-margin-top: 150px;
     /* border-bottom: 1px solid #0000; */
     border-radius: 10px;
@@ -77,7 +77,7 @@
     word-break: break-word;
     display: inline-block;
     font-size: 17px;
-    transition: .2s;
+    transition: .2s ease-in-out;
 }
 
 .dark_text-input-closed {
@@ -94,6 +94,7 @@
     scrollbar-width: none;
     z-index: 96;
     opacity: 0%;
+    transition: .2s ease-in-out;
 }
 
 .dark_text-input {
@@ -101,7 +102,7 @@
     color: #ffffff;
     border-top: 1px solid #0e0e0e;
     position: fixed;
-    bottom: 90px;
+    bottom: 110px;
     left: 0;
     width: 100%;
     max-width: 100%;
@@ -117,7 +118,7 @@
     overflow-y: scroll;
     overflow-x: hidden;
     transition-property: background-color border-top opacity min-height;
-    transition-duration: .2s;
+    transition: .2s ease-in-out;
 }
 
 .dark_prompt-actions {
@@ -126,10 +127,10 @@
     width: 100%;
     height: 90px;
     position: fixed;
-    bottom: 0px;
+    bottom: 20px;
     z-index: 100;
     opacity: 100%;
-    transition: .2s;
+    transition: .2s ease-in-out;
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
     -webkit-user-select: none;
@@ -145,7 +146,7 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 45px;
+    height: 65px;
     z-index: 100;
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
@@ -154,7 +155,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    transition: .2s;
+    transition: .2s ease-in-out;
 }
 
 .dark_navbutton {
@@ -164,7 +165,7 @@
     padding-left: 13px;
     padding-right: 13px;
     height: 40px;
-    transition: .2s;
+    transition: .2s ease-in-out;
 }
 
 .dark_navbuttonselected {
@@ -174,7 +175,7 @@
     padding-left: 13px;
     padding-right: 13px;
     height: 40px;
-    transition: .2s;
+    transition: .2s ease-in-out;
 }
 
 .dark_navbuttondisabled {
@@ -184,5 +185,5 @@
     padding-left: 13px;
     padding-right: 13px;
     height: 40px;
-    transition: .2s;
+    transition: .2s ease-in-out;
 }

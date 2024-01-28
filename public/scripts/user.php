@@ -1,7 +1,7 @@
 <?php
 
 // arg[0] = username, arg[1] = password, arg[2]: 0 = sign in, 1 = create user, 2 = delete user, 3 = modify user
-function userMod($username, $password, $mode) {
+function userMod($username, $password, $mode, $recovery_string) {
     
     $algorithm = "sha256"; // You can choose any supported algorithm
     $pass_hash = hash($algorithm, $password);
@@ -9,12 +9,21 @@ function userMod($username, $password, $mode) {
     // The URL to which the request is sent
     $url = 'https://www.satsgpt.xyz:9090/sgptusermod';
 
-    // The data to send via POST
-    $data = [
-        'username' => $username,
-        'pass_hash' => $pass_hash,
-        'mode' => $mode
-    ];
+    if ($mode == 1 || $mode == 2) {
+        $data = [
+            'username' => $username,
+            'pass_hash' => $pass_hash,
+            'recovery_string' => $recovery_string,
+            'mode' => $mode
+        ];
+    } else {
+        $data = [
+            'username' => $username,
+            'pass_hash' => $pass_hash,
+            'mode' => $mode
+        ];
+    }
+
 
     $postData = $jsonData = json_encode($data);
 
@@ -85,6 +94,8 @@ function getUser($user_id) {
     echo $response;
 }
 
+
+
 // Function request handler
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -97,13 +108,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
     if ($server_mode == 0) {
+        // create account
         $username = $data['username'];
         $password = $data['password'];
+        $recovery_string = $data['recovery_string'];
         $mode = $data['mode'];
-        userMod($username, $password, $mode);
+        userMod($username, $password, $mode, $recovery_string);
 
     } else if ($server_mode == 1) {
+        // get user info
         $user_id = $data['user_id'];
         getUser($user_id);
+
+    } else if ($server_mode == 2) {
+        // recover account
+        $password = $data['password'];
+        $recovery_string = $data['recovery_string'];
+        // password is a new password
+        userMod("", $password, $server_mode, $recovery_string);
     }
 }

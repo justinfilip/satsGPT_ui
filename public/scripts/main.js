@@ -12,6 +12,15 @@ var display_mode = "";
 var display_mode_cookie = readCookie('display_mode');
 var auth_mode = 0;
 
+const sign_up_button = document.getElementById("sign-up-button");
+const sign_in_button = document.getElementById("sign-in-button");
+const username_field = document.getElementById("username-field");
+const password_field = document.getElementById("password-field");
+const confirm_password_field = document.getElementById("confirm-password-field");
+const recover_account_button = document.getElementById('recover-account-button');
+const submit_auth_button = document.getElementById("auth-submit-button");
+const error_div = document.getElementById("error-div");
+
 if (display_mode_cookie == null) {
     display_mode = "light_";
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -111,8 +120,10 @@ function dlToggle(mode) {
         // cycling themes
         if (display_mode === 'light_') {
             display_mode = 'dark_';
+            document.getElementById('pwa-theme').content = "#000000";
         } else if (display_mode === 'dark_') {
             display_mode = 'light_';
+            document.getElementById('pwa-theme').content = "#ffffff";
         } else {
             console.log("shouldn't be here");
         }
@@ -251,7 +262,7 @@ async function sendPrompt(prompt) {
 
                 e.target.className = "history-prompt-element-cancel-button-selected";
                 var prompt_id = e.target.parentElement.parentElement.id.split("_")[1];
-                setTimeout(function() {
+                setTimeout(function killTask() {
                     var prompt_history_element_to_delete = document.getElementById("prompt_" + prompt_id);
                     if (prompt_history_element_to_delete.className === display_mode + "history-prompt-element-loading") {
                         // call server to cancel inference task for prompt_id
@@ -273,9 +284,12 @@ async function sendPrompt(prompt) {
                             if (task_deleted === 1) {
                                 prompt_history_element_to_delete.remove();
                                 document.getElementById(prompt_id).remove();
+                                promptable = 1;
+                                send_button.className = "text-input-send-button";
                             } else {
                                 // failed, maybe retry
                                 console.log("do this later");
+                                setTimeout(function() {killTask()}, 1000);
                             }
                             
                         })
@@ -391,6 +405,16 @@ keys_toggle.addEventListener('pointerdown', function(e) {
 
 // Auxillary functions:
 
+async function hashWords(string) {
+    const utf8 = new TextEncoder().encode(string);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', utf8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray
+      .map((bytes) => bytes.toString(16).padStart(2, '0'))
+      .join('');
+    return hashHex;
+}
+
 function msToLocalDateTime(millis) {
     // Create a new Date object from the input milliseconds
     const date = new Date(millis);
@@ -446,16 +470,97 @@ function isMobile() {
     return false;
 }
 
+//
+
+//
+
 async function userMod(username, password, mode, error_div) {
 
-    var request_body = {
-        username: username,
-        password: password,
-        // 0 = create user, 1 = delete user
-        mode: mode,
-        // 0 = userMod
-        // 1 = getUser
-        server_mode: 0
+    
+    var words = [];
+
+    // create user
+    if (mode === 1) {
+        // generate recovery words > sha > send to server with request body
+        console.log("signing up fdsafdsafdsa")
+        const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
+        console.log(alphabet);
+        // generate 12 words
+        for (let i = 0; i < 12; i++) {
+
+            let word = '';
+
+            // with 6 characters
+            for (let j = 0; j < 6; j++) {
+                let index = Math.floor(Math.random() * 26);
+                console.log(index);
+                word += alphabet[index];
+            }
+
+            words.push(word);
+
+        }
+        
+
+        let recovery_string = '';
+
+        for (let i = 0; i < words.length; i++) {
+            recovery_string += words[i];
+        }
+
+        console.log(recovery_string);
+
+        var request_body = {
+            username: username,
+            password: password,
+            // 0 = create user, 1 = delete user
+            mode: mode,
+            // 0 = userMod
+            // 1 = getUser
+            server_mode: 0,
+            recovery_string: recovery_string
+        }
+
+        console.log(request_body);
+    }
+    // recover user
+    if (mode === 2) {
+        // generate recovery words > sha > send to server with request body
+    
+        let recovery_string = '';
+
+        const word_boxes = document.getElementsByClassName('word-box');
+
+        for (let i = 0; i < word_boxes.length; i++) {
+            console.log(word_boxes[i].value);
+            recovery_string += word_boxes[i].value;
+        }
+        var request_body = {
+            username: username,
+            password: password,
+            // 0 = create user, 1 = delete user
+            mode: mode,
+            // 0 = userMod
+            // 1 = getUser
+            server_mode: 0,
+            recovery_string: recovery_string
+        }
+
+        console.log(request_body);
+
+
+    // sign in / up 
+    } else if (mode === 0) {
+        var request_body = {
+            username: username,
+            password: password,
+            // 0 = create user, 1 = delete user
+            mode: mode,
+            // 0 = userMod
+            // 1 = getUser
+            server_mode: 0
+        }
     }
 
     console.log("making request");
@@ -468,20 +573,83 @@ async function userMod(username, password, mode, error_div) {
     .then(data => {
 
         try {
+
+            console.log(data);
             data = JSON.parse(data);
 
             // 'id' is a unique key that is to be used for making prompt requests, it is separate from the username and password
-            returned_id  = data['id'];
+            returned_id = data['id'];
 
             if (returned_id === 0) {
 
                 error_div.innerHTML = "No user exists by that name";
 
+            } else if (returned_id === -1) {
+
+                error_div.innerHTML = "User already exists";
+
             } else {
+
+                auth_mode = 2;
+
+                let authentication_message = "Authentication successful";
+
+                // account creation in progress
+                if (mode === 1) {
+
+                    authentication_message = "Account created successfully</br></br>It is very important to write down these 12 strings and keep them safe, it is the only way to recover your account!"
+                    // display recovery words and continue button
+                    console.log('displaying words');
+                    const center_tag = document.createElement('center');
+                    center_tag.id = 'words-center-tag';
+                    const recovery_words_container = document.createElement('center');
+                    recovery_words_container.className = 'recovery-phrase-container';
+            
+                    // <input tabindex="3" id="username-field" type="text" name="username" maxlength="20" title="Your username" autocomplete="username" placeholder="Username" value="" autocapitalize="off" autocorrect="off" class="username-input"></input>
+            
+                    for (let i = 0; i < words.length; i++) {
+                        console.log('processing word')
+            
+                        const word_box = document.createElement('div');
+                        word_box.className = 'string-box';
+                        word_box.id = 'word' + i;
+                        word_box.type = 'text';
+                        word_box.maxLength = '20';
+                        word_box.innerHTML = '<p style="display: inline-block; float: left;">String ' + i + '</p><b style="display: inline-block; float: right;">' + words[i] + '</b>';
+                        word_box.disabled = 'true';
+            
+                        recovery_words_container.appendChild(word_box);
+            
+                    }
+            
+                    /// get password fields, hide them, show word boxes between submit buttons and auth mode buttons after username
+                    password_field.className = "hidden";
+                    confirm_password_field.className = "hidden";
+                    sign_in_button.className = "hidden";
+                    sign_up_button.className = "hidden";
+                    username_field.className = "hidden";
+                    recover_account_button.className = "hidden";
+            
+                    center_tag.appendChild(recovery_words_container);
+                    username_field.insertAdjacentElement('afterend', center_tag);
+
+
+                    error_div.innerHTML = authentication_message;
+                    submit_auth_button.innerHTML = "Continue";
+                    focus(error_div)
+
+
+
+
+
+                } else {
+                    error_div.innerHTML = authentication_message;
+                    setTimeout(function() {window.location.reload();}, 1500);
+                }
+
                 setCookie('id', returned_id, "");
                 console.log(readCookie('id'));
-                error_div.innerHTML = "Authentication successful";
-                setTimeout(function(e) {window.location.reload();}, 1500);
+                
             }
 
         } catch {
@@ -724,15 +892,6 @@ if (stored_user_id == null) {
 }
 
 
-const sign_up_button = document.getElementById("sign-up-button");
-const sign_in_button = document.getElementById("sign-in-button");
-const username_field = document.getElementById("username-field");
-const password_field = document.getElementById("password-field");
-const confirm_password_field = document.getElementById("confirm-password-field");
-const recover_account_button = document.getElementById('recover-account-button');
-const submit_auth_button = document.getElementById("auth-submit-button");
-
-
 sign_up_button.addEventListener('click', function(e) {
     auth_mode = 0;
     sign_in_button.className = "auth-mode-button";
@@ -752,7 +911,7 @@ sign_in_button.addEventListener('click', function(e) {
 
 recover_account_button.addEventListener('click', function(e) {
     
-    const error_div = document.getElementById("error-div");
+    
     error_div.innerHTML = "";
     console.log("what")
     var username_value = username_field.value;
@@ -773,16 +932,19 @@ recover_account_button.addEventListener('click', function(e) {
             word_box.className = 'word-box';
             word_box.id = 'wb' + i;
             word_box.type = 'text';
-            word_box.maxLength = '20';
-            word_box.placeholder = 'Word ' + (i + 1);
+            word_box.maxLength = '6';
+            word_box.placeholder = 'String ' + (i + 1);
 
             recovery_phrase_container.appendChild(word_box);
 
         }
 
         /// get password fields, hide them, show word boxes between submit buttons and auth mode buttons after username
-        password_field.className = "hidden";
-        confirm_password_field.className = "hidden";
+        password_field.placeholder = "New password";
+        password_field.value = "";
+        confirm_password_field.placeholder = "Confirm new password";
+        confirm_password_field.value = "";
+        confirm_password_field.className = "password-input";
         sign_in_button.className = "hidden";
         sign_up_button.className = "hidden";
         username_field.className = "hidden";
@@ -802,6 +964,10 @@ recover_account_button.addEventListener('click', function(e) {
             sign_up_button.className = "auth-mode-button";
             username_field.className = "username-input";
             recover_account_button.className = "auth-mode-button";
+            password_field.placeholder = "Password";
+            password_field.value = "";
+            confirm_password_field.placeholder = "Confirm password";
+            password_field.value = "";
             sign_in_button.click();
         });
 
@@ -890,11 +1056,19 @@ submit_auth_button.addEventListener('click', function(e) {
     var username_value = username_field.value;
     var password_value = password_field.value;
 
+    // post recovery phrase creation
+    if (auth_mode === 2) {
+        
+        console.log("continuing to main ui");
+        error_div.innerHTML = "Continuing account setup..";
+        setTimeout(function(e) {window.location.reload();}, 1500);
+    }
+
     // sign in / up
     if (auth_mode === 0) {
 
         console.log("signing");
-        const error_div = document.getElementById("error-div");
+        
 
         // 0 = sign in, 1 = create user, 2 = delete user, 3 = modify user
         if (sign_in_button.className === "auth-mode-button-selected") {
@@ -930,9 +1104,55 @@ submit_auth_button.addEventListener('click', function(e) {
 
     // recover account
     } else if (auth_mode === 1) {
+
         console.log("recovering account");
+        userMod("", password_value, 2, error_div);
+
+        // 2 = recover user
+        var mode = 2;
+
+        var confirm_password_value = confirm_password_field.value;
+        // do input validation
+        if(password_value === confirm_password_value) {
+            if (credsValidation(username_value, password_value, error_div) === 1) {
+
+                userMod(username_value, password_value, mode, error_div);
+            }
+        } else {
+            error_div.innerHTML = "Recovery failed";
+        }
     }
     
+});
+
+// service worker for PWA
+
+self.addEventListener('install', (event) => {
+    event.waitUntil(
+        caches.open('my-cache')
+        .then((cache) => cache.addAll([
+            '/index.php',
+            '/media/satsGPT_128.png',
+            '/media/satsGPT_96.png',
+            '/media/satsGPT_72.png',
+            '/styles/style_light.css',
+            '/style/style_dark.css',
+            '/scripts/main.js'
+        ]))
+    );
+});
+
+self.addEventListener('fetch', (event) => {
+    event.respondWith(
+        caches.match(event.request)
+        .then((response) => {
+            if (response) {
+                return response;
+            }
+
+            return fetch(event.request);
+        }
+    ));
 });
 
 // qrcode.js

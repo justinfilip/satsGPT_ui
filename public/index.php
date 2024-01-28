@@ -5,6 +5,10 @@
     <meta property="og:image" content="media/x_pic.png" />
     <meta name="viewport" content="initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" charset="UTF-8"/>
     <link rel="icon" type="image/png" href="media/favicon.png"/> 
+    <link rel="manifest" href="manifest.json" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta id="pwa-theme" name="theme-color" content="#000000" style="transition: .2s ease-in-out;">
+    <meta name="view-transition" content="same-origin">
 
 </head>
 
@@ -101,6 +105,7 @@
         <div id="aboutpage" class="hidden">
             <center><img id="light_satsGPT" class="satsGPT" src="media/light_about_satsGPT.png"></img></center>
             <center><img id="dark_satsGPT" class="satsGPT-invisible" src="media/dark_about_satsGPT.png"></img></center>
+            <center><p class="follow-x-text">Follow</p><a class="follow-x-text" href="https://x.com/satsGPT">@satsGPT</a><p class="follow-x-text">on 𝕏</p></center>
         </div>
 
         <script src="scripts/main.js"></script>
