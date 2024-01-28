@@ -2,7 +2,7 @@
 
 <head>
 
-    <meta property="og:image" content="media/x_pic.png" />
+    <meta property="og:image" content="media/satsGPT_128.png" />
     <meta name="viewport" content="initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" charset="UTF-8"/>
     <link rel="icon" type="image/png" href="media/favicon.png"/> 
     <link rel="manifest" href="manifest.json" />
@@ -19,7 +19,7 @@
     <link href="styles/style_light.css" rel="stylesheet" type="text/css"/>
     <link href="styles/style_dark.css" rel="stylesheet" type="text/css"/>
     <!-- <link rel="stylesheet" href="/styles/prism.css"> -->
-    <title style="display: none;">satsGPT</title>
+    <title style="display: none;">GPT</title>
 
     <body id="main_body" class="light_body">
         <center><div id="satsGPT" class="light_satsGPT"></div></center>

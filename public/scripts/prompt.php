@@ -42,7 +42,7 @@ function getTokens($prompt_id, $last_token, $server_mode) {
     echo $response;
 }
 
-function sendPrompt($prompt, $server_mode) {
+function sendPrompt($prompt, $server_mode, $user_id) {
 
     $prompt_id = randHash(50);
 
@@ -51,6 +51,7 @@ function sendPrompt($prompt, $server_mode) {
 
     // The data to send via POST
     $data = [
+        'user_id' => $user_id,
         'prompt' => $prompt,
         'prompt_id' => $prompt_id,
         'server_mode' => $server_mode
@@ -138,7 +139,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($post_mode == 0) {
         $server_mode = 0;
         $prompt = $data['prompt'];
-        sendPrompt($prompt, $server_mode);
+        $user_id = $data['user_id'];
+        sendPrompt($prompt, $server_mode, $user_id);
     } else if ($post_mode == 1) {
         $prompt_id = $data['prompt_id'];
         $last_token = $data['last_token'];

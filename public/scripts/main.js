@@ -231,6 +231,7 @@ async function sendPrompt(prompt) {
 
     text_input.innerHTML = "";
     var request_body = {
+        user_id: readCookie('id'),
         prompt: prompt,
         mode: 0
     }
@@ -1126,6 +1127,15 @@ submit_auth_button.addEventListener('click', function(e) {
 });
 
 // service worker for PWA
+
+if (window.matchMedia('(display-mode: standalone)').matches) {  
+
+    // PWA is installed
+
+    // do things here  
+    // set a variable to be used when calling something  
+    // e.g. call Google Analytics to track standalone use   
+} 
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
