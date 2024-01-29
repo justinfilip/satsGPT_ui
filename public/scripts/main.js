@@ -125,7 +125,7 @@ function dlToggle(mode) {
             display_mode = 'light_';
             document.getElementById('pwa-theme').content = "#ffffff";
         } else {
-            console.log("shouldn't be here");
+            // pass
         }
         
         setCookie('display_mode', display_mode, "");
@@ -182,7 +182,7 @@ async function getTokens(prompt_id, last_token) {
                 token_payload = data[prompt_id][2];
             
                 if (token_payload == "") {
-                    // console.log("waiting");
+   
                     setTimeout(function(){
                         getTokens(prompt_id, last_token);
                     }, 1000);
@@ -217,7 +217,7 @@ async function getTokens(prompt_id, last_token) {
             return
 
         } else {
-            console.log("You shouldn't be here.. GO. RUN. Tell SOMEBODY.");
+            // pass
         }
     })
     .catch(error => {
@@ -289,7 +289,6 @@ async function sendPrompt(prompt) {
                                 send_button.className = "text-input-send-button";
                             } else {
                                 // failed, maybe retry
-                                console.log("do this later");
                                 setTimeout(function() {killTask()}, 1000);
                             }
                             
@@ -483,10 +482,8 @@ async function userMod(username, password, mode, error_div) {
     // create user
     if (mode === 1) {
         // generate recovery words > sha > send to server with request body
-        console.log("signing up fdsafdsafdsa")
         const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
-        console.log(alphabet);
         // generate 12 words
         for (let i = 0; i < 12; i++) {
 
@@ -495,7 +492,6 @@ async function userMod(username, password, mode, error_div) {
             // with 6 characters
             for (let j = 0; j < 6; j++) {
                 let index = Math.floor(Math.random() * 26);
-                console.log(index);
                 word += alphabet[index];
             }
 
@@ -510,8 +506,6 @@ async function userMod(username, password, mode, error_div) {
             recovery_string += words[i];
         }
 
-        console.log(recovery_string);
-
         var request_body = {
             username: username,
             password: password,
@@ -523,7 +517,6 @@ async function userMod(username, password, mode, error_div) {
             recovery_string: recovery_string
         }
 
-        console.log(request_body);
     }
     // recover user
     if (mode === 2) {
@@ -534,7 +527,6 @@ async function userMod(username, password, mode, error_div) {
         const word_boxes = document.getElementsByClassName('word-box');
 
         for (let i = 0; i < word_boxes.length; i++) {
-            console.log(word_boxes[i].value);
             recovery_string += word_boxes[i].value;
         }
         var request_body = {
@@ -547,8 +539,6 @@ async function userMod(username, password, mode, error_div) {
             server_mode: 0,
             recovery_string: recovery_string
         }
-
-        console.log(request_body);
 
 
     // sign in / up 
@@ -564,8 +554,6 @@ async function userMod(username, password, mode, error_div) {
         }
     }
 
-    console.log("making request");
-
     fetch('scripts/user.php', {
         method: 'POST',
         body: JSON.stringify(request_body)
@@ -575,7 +563,6 @@ async function userMod(username, password, mode, error_div) {
 
         try {
 
-            console.log(data);
             data = JSON.parse(data);
 
             // 'id' is a unique key that is to be used for making prompt requests, it is separate from the username and password
@@ -600,7 +587,6 @@ async function userMod(username, password, mode, error_div) {
 
                     authentication_message = "Account created successfully</br></br>It is very important to write down these 12 strings and keep them safe, it is the only way to recover your account!"
                     // display recovery words and continue button
-                    console.log('displaying words');
                     const center_tag = document.createElement('center');
                     center_tag.id = 'words-center-tag';
                     const recovery_words_container = document.createElement('center');
@@ -609,7 +595,6 @@ async function userMod(username, password, mode, error_div) {
                     // <input tabindex="3" id="username-field" type="text" name="username" maxlength="20" title="Your username" autocomplete="username" placeholder="Username" value="" autocapitalize="off" autocorrect="off" class="username-input"></input>
             
                     for (let i = 0; i < words.length; i++) {
-                        console.log('processing word')
             
                         const word_box = document.createElement('div');
                         word_box.className = 'string-box';
@@ -649,7 +634,6 @@ async function userMod(username, password, mode, error_div) {
                 }
 
                 setCookie('id', returned_id, "");
-                console.log(readCookie('id'));
                 
             }
 
@@ -678,7 +662,6 @@ async function getUser(user_id) {
     .then(response => response.text())
     .then(data => {
         
-        console.log(data);
         data = JSON.parse(data);
         returned_id  = data['user_id'];
         expiry_time = data['expiry_time']; // in ms
@@ -735,13 +718,10 @@ function collectUserPayment(returned_id) {
     .then(response => response.text()) //.json()
     .then(data => {
     
-        // console.log(data);
         data = JSON.parse(data);
 
         // get payment_request from response
         let payment_request = data['payment_request'];
-        // console.log("Payment request: " + payment_request);
-
         let amount_sats = data['amount_sats'];
         let btc_price = data['btc_price']
 
@@ -801,7 +781,7 @@ function collectUserPayment(returned_id) {
         terms_conditions_text.className = "terms-conditions-text";
         terms_conditions_text.innerHTML = "<b>Terms & Conditions:</b></br></br>\
         1. Your personal information is not collected unless voluntarily included in your username. If that occurs, that's your problem, so it is suggested that you do not include sensitive personal information in your username.</br></br>\
-        2. This service will be available to you for the duration of 30 days, not including maintenance windows and service interruptions. Any pre-planned maintenance windows will be announced 24 hours in advance, within this application. At the time of account creation, you were provided a recovery key for your account. This recovery key is the only way to recover your account and it is your responsibility to keep it safe.</br></br>\
+        2. This service will be available to you for the duration of 30 days, not including maintenance windows and service interruptions. At the time of account creation, you were provided a recovery key for your account. This recovery key is the only way to recover your account and it is your responsibility to keep it safe.</br></br>\
         3. Your interaction data (prompts, token output) with the open-source models used in this application exists momentarily on the server as it is being processed or generated and is deleted after your prompt has completed processing. You are responsible for saving outputs that you want to use later.</br></br>\
         4. Performance and usage data will be used to improve the service.</br></br>\
         5. You will be solely responsible for how you use and interpret the data generated in this application, and you release satsGPT and related or affiliated persons or entities from liability in any and all instances where data from this application was used or interpreted in a way that harms yourself or others both directly and indrectly by way of the use of this application or the use of 3rd party application code within this program."
@@ -834,7 +814,6 @@ function collectUserPayment(returned_id) {
         .then(response => response.text()) //.json()
         .then(data => {
         
-            // console.log(data);
             data = JSON.parse(data);
     
             // if response contains confirmed payment (expiry time > now by whatever)
@@ -914,7 +893,6 @@ recover_account_button.addEventListener('click', function(e) {
     
     
     error_div.innerHTML = "";
-    console.log("what")
     var username_value = username_field.value;
     if (username_value.length >= 6) {
 
@@ -1060,7 +1038,6 @@ submit_auth_button.addEventListener('click', function(e) {
     // post recovery phrase creation
     if (auth_mode === 2) {
         
-        console.log("continuing to main ui");
         error_div.innerHTML = "Continuing account setup..";
         setTimeout(function(e) {window.location.reload();}, 1500);
     }
@@ -1068,13 +1045,9 @@ submit_auth_button.addEventListener('click', function(e) {
     // sign in / up
     if (auth_mode === 0) {
 
-        console.log("signing");
-        
-
         // 0 = sign in, 1 = create user, 2 = delete user, 3 = modify user
         if (sign_in_button.className === "auth-mode-button-selected") {
 
-            console.log("signing in");
             // 1 = create user
             var mode = 0;
 
@@ -1083,8 +1056,6 @@ submit_auth_button.addEventListener('click', function(e) {
             }
 
         } else {
-
-            console.log("signing up");
     
             // 1 = create user
             var mode = 1;
@@ -1106,7 +1077,6 @@ submit_auth_button.addEventListener('click', function(e) {
     // recover account
     } else if (auth_mode === 1) {
 
-        console.log("recovering account");
         userMod("", password_value, 2, error_div);
 
         // 2 = recover user

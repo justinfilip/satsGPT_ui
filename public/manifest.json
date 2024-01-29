@@ -1,7 +1,7 @@
 {
     "name": "satsGPT",
     "short_name": "satsGPT",
-    "description": "Bitcoin enabled open-source artificial intelligence",
+    "description": "Bitcoin enabled access to open-source AI",
     "start_url": "/index.php",
     "display": "standalone",
     "icons": [
