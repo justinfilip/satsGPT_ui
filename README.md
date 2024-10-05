@@ -1,5 +1,5 @@
 # satsGPT_ui
 
-satsgpt.xyz
+https://satsgpt.xyz
 
 Currently offline
